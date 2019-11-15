@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="etl.dispatch.config.dao.IConfInfoTasksDao">
+    <resultMap id="ConfInfoTasksEntityMap" type="etl.dispatch.config.entity.ConfInfoTasksEntity">
+		<result column="pk_id" property="pkId" />
+		<result column="tasks_name" property="tasksName" />
+		<result column="remark" property="remark" />
+		<result column="script_type" property="scriptType" />
+		<result column="script_id" property="scriptId" />
+		<result column="take_eval" property="takeEval" />
+		<result column="alarm_notice" property="alarmNotice" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<parameterMap id="ConfInfoTasksEntity" type="etl.dispatch.config.entity.ConfInfoTasksEntity"/>
+	
+	<sql id="All_Column_List">
+		`pk_id` , `tasks_name` , `remark` , `script_type` , `script_id` , `take_eval` , `alarm_notice` , `status` , `create_user` , `create_time` , `update_user` , `update_time` 
+	</sql>
+	
+	<select id="findConfInfoTasks"  parameterMap="ConfInfoTasksEntity" resultMap="ConfInfoTasksEntityMap">
+		select
+		    <include refid="All_Column_List" />
+		from 
+		     `conf_info_tasks`
+		WHERE 
+		     1=1 
+		<if test='pkId!=null'>
+			AND pk_id =#{pkId}
+		</if>
+		<if test='tasksName!=null'>
+			AND tasks_name =#{tasksName}
+		</if>
+		<if test='scriptType!=null'>
+			AND script_type =#{scriptType}
+		</if>
+		<if test='scriptId!=null'>
+			AND script_id =#{scriptId}
+		</if>
+		<if test='status!=null'>
+			AND status =#{status}
+		</if>
+	</select>
+</mapper>

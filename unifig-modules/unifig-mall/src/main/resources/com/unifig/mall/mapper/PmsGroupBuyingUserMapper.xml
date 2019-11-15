@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.PmsGroupBuyingUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.PmsGroupBuyingUser">
+        <id column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="user_pic" property="userPic" />
+        <result column="type" property="type" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <resultMap id="BaseResultVOMap" type="com.unifig.mall.bean.vo.PmsGroupBuyingUserVo">
+        <result column="name" property="name" />
+        <result column="product_name" property="productName" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="number" property="number" />
+        <result column="pay_amount" property="payAmount" />
+        <result column="product_pic" property="productPic"/>
+        <result column="order_id" property="orderId"/>
+        <result column="end_time" property="endTime"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, parent_id, user_id, user_name, user_pic, type, create_time
+    </sql>
+    <select id="selectListByUserId" resultMap="BaseResultVOMap">
+                SELECT
+            (
+                SELECT
+                    `name`
+                FROM
+                    `pms_group_buying`
+                WHERE
+                    id = (
+                        SELECT
+                            group_buying_id
+                        FROM
+                            `pms_group_buying_info`
+                        WHERE
+                            id = u.parent_id
+                    )
+            ) AS `name`,
+            (
+                SELECT
+                    `product_name`
+                FROM
+                    `pms_group_buying`
+                WHERE
+                    id = (
+                        SELECT
+                            group_buying_id
+                        FROM
+                            `pms_group_buying_info`
+                        WHERE
+                            id = u.parent_id
+                    )
+            ) AS product_name,
+            (
+                SELECT
+                    `status`
+                FROM
+                    `pms_group_buying_info`
+                WHERE
+                    id = u.parent_id
+            ) AS `status`,
+            u.create_time,
+            (
+                SELECT
+                    `number`
+                FROM
+                    `pms_group_buying_info`
+                WHERE
+                    id = u.parent_id
+            ) AS number,
+            (
+                SELECT
+                    pay_amount
+                FROM
+                    `oms_order`
+                WHERE
+                    id  = u.order_id
+            ) AS pay_amount,
+            (
+                SELECT
+                    product_pic
+                FROM
+                    `oms_order_item`
+                WHERE
+                    order_id = u.order_id
+            ) AS product_pic,
+            u.order_id,
+            (
+                SELECT
+                    `end_time`
+                FROM
+                    `pms_group_buying_info`
+                WHERE
+                    id = u.parent_id
+            ) AS `end_time`,
+	u.parent_id
+        FROM
+            `pms_group_buying_user` u
+        WHERE
+            u.user_id = #{userId} and type = #{type}
+    </select>
+
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="etl.dispatch.boot.dao.ConfRelyGroupMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="etl.dispatch.boot.entity.ConfRelyGroup">
+		<id column="pk_id" property="pkId" />
+		<result column="group_id" property="groupId" />
+		<result column="relygroup_id" property="relygroupId" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+
+	<select id="selectGroup" resultType="etl.dispatch.boot.bean.GroupBean">
+	SELECT
+		r.pk_id `pkId`,
+		g.pk_id 'groupId',
+		g.group_name `groupName`,
+		r.relygroup_id `relygroupId`,
+		r.relygroup_id `relygroupId1`,
+		g1.group_name `relygroupName`,
+		(select is_success from sign_info_tasks st where st.classify=2 and st.task_id=r.group_id ORDER BY log_time desc LIMIT 1) `isSuccess`,
+		(select message from sign_info_tasks st where st.classify=2 and st.task_id=r.group_id ORDER BY log_time desc LIMIT 1) `message`,
+		(select log_time from sign_info_tasks st where st.classify=2 and st.task_id=r.group_id ORDER BY log_time desc LIMIT 1) `logTime`
+	FROM
+		conf_rely_group r
+	LEFT JOIN conf_info_group g ON r.group_id = g.pk_id
+	LEFT JOIN conf_info_group g1 ON r.relygroup_id = g1.pk_id 
+	
+	WHERE
+		r.`status` = 1
+	AND g.classify_id = #{classifyId}
+	</select>
+	<select id="selectGroupBak">
+	SELECT
+		   *
+		FROM
+			(
+				SELECT
+					a.pk_id `pkId`,
+					a.group_name `groupName`,
+					b.relygroup_id `relygroupId`
+				FROM
+					conf_info_group a
+				LEFT JOIN conf_rely_group b ON a.pk_id = b.group_id
+		where a.`status`=1
+			) c
+		LEFT JOIN (
+			SELECT
+				relygroupId1,
+				relygroupName
+			FROM
+				(
+					SELECT
+						a.pk_id AS relygroupId1,
+						a.group_name AS relygroupName
+					FROM
+						conf_info_group a
+					LEFT JOIN conf_rely_group b ON a.pk_id = b.relygroup_id
+		where a.`status`=1
+				) d
+			GROUP BY
+				relygroupId1,
+				relygroupName
+		) e ON c.relygroupId = e.relygroupId1 
+	
+	</select>
+
+	<select id="isNext" resultType="etl.dispatch.boot.entity.ConfRelyGroup">
+	select * from conf_rely_group c where  c.`status`=1 and  c.relygroup_id =#{id}
+	</select>
+	
+	<update id="updatebyGroupId">
+		update conf_rely_group SET `status`=-1 where group_id=#{groupId}
+	</update>
+
+</mapper>

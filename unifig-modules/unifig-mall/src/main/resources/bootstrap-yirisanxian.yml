@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: unifig-mall
+  cloud:
+    config:
+      uri: http://172.17.0.3:10010
+      profile: yirisanxian
+      label: master

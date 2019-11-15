@@ -1,0 +1,51 @@
+{
+    "create_dm_schedule_yyyymm":"CREATE TABLE IF NOT EXISTS bi_dwd.dwd_schedule_dm_yyyymm (
+                                    `user_id` INT ( 10 ) DEFAULT NULL COMMENT '用户id',
+                                    `sche_id` INT ( 10 ) DEFAULT NULL COMMENT '日程id',
+                                    `action` INT ( 2 ) DEFAULT NULL COMMENT '1:表示日程添加,2:delete日程删除,3:日程标注完成,4:日程分享',
+                                    `app_plat_id` INT ( 4 ) DEFAULT NULL COMMENT '设备',
+                                    `app_version_id` INT ( 4 ) DEFAULT NULL COMMENT '版本',
+                                    `app_id` INT ( 4 ) DEFAULT NULL COMMENT '应用id',
+                                    `year` INT ( 4 ) DEFAULT NULL,
+                                    `month` INT ( 4 ) DEFAULT NULL,
+                                    `day` INT ( 4 ) DEFAULT NULL,
+                                    `hour` INT ( 4 ) DEFAULT NULL,
+                                    `statis_date` INT ( 10 ) DEFAULT NULL,
+                                    KEY `idx_dwd_schedule_dm_yyyymm` ( `statis_date`, `sche_id` ) USING BTREE 
+                                    ) ENGINE = INNODB DEFAULT CHARSET = utf8;",
+                
+    "insertSelectSql":"insert into bi_dwd.dwd_schedule_dm_yyyymm (
+                                `user_id` ,
+                                `sche_id` ,
+                                `action` ,
+                                `app_plat_id` ,
+                                `app_version_id` ,
+                                `app_id` ,
+                                `year` ,
+                                `month`,
+                                `day` ,
+                                `hour` ,
+                                `statis_date`
+                            )
+                            select 
+                                `master_id` ,
+                                `sche_id` ,
+                                `action` ,
+                                `app_plat_id` ,
+                                `app_version_id` ,
+                                `app_id` ,
+                                `year` ,
+                                `month`,
+                                `day` ,
+                                `hour` ,
+                                `statis_date`
+                            from bi_ods.ods_schedule_dm_yyyymm 
+                                WHERE 
+                            statis_date = ${statis_date}",
+                                    
+    "delete_yes_date":"delete from bi_dwd.dwd_schedule_dm_yyyymm where statis_date = ${statisDate}",   
+                
+     "delete_table":"drop TABLE IF EXISTS bi_dwd.dwd_schedule_dm_yyyymm ;",
+     
+     "delete_date":"delete from bi_dwd.dwd_schedule_dm_yyyymm where 1=1 AND statis_date < ${statisDate} "
+}

@@ -1,0 +1,117 @@
+{
+
+   "creat_tmptime":"CREATE TABLE IF NOT EXISTS bi_online.all_time_tmp_all_store (
+						  `cube_id` int(10) NOT NULL COMMENT 'cube_id',
+						  `plat_id` int(4) NOT NULL,
+						  `hashid` bigint(20) DEFAULT NULL,
+						  `online_time` bigint(20) DEFAULT NULL COMMENT '在线时长'
+						) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='单次在线时长统计';",
+                        
+    "trancate_tmptime":"TRUNCATE TABLE bi_online.all_time_tmp_all_store",
+                        
+    "creat_alltime":"CREATE TABLE IF NOT EXISTS  bi_online.all_time_log_all_store (
+                          `cube_id` int(10) DEFAULT NULL COMMENT 'cube_id',
+                          `plat_id` int(4) DEFAULT NULL,
+                          `online_time` bigint(20) DEFAULT NULL COMMENT '在线时长',
+                          `status` int(4) DEFAULT NULL COMMENT '在线状态'
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+    
+    "selectTimeLogLimit":"SELECT
+								i.cube_id,
+								i.plat_id,
+								i.hashid,
+								i.`timestamp` as inTime,
+								o.`timestamp` as outTime,
+								IFNULL(o.`type`, 'unover') status
+							FROM
+								bi_online.login_log_all_store i
+							LEFT JOIN bi_online.logout_log_all_store o ON i.`hashid` = o.`hashid`
+							WHERE
+								1 = 1 
+							limit ${offset},${rows}",
+							
+	"selectUpdateStatusLog":"SELECT
+                            cube_id,
+                            plat_id,
+                        STATUS 
+                        FROM
+                            (
+                        SELECT
+                            i.cube_id,
+                            i.plat_id,
+                            i.`timestamp` AS inTime,
+                            o.`timestamp` AS outTime,
+                            IFNULL( o.`type`, 'unover' ) STATUS 
+                        FROM
+                            bi_online.login_log_all_store i
+                            LEFT JOIN bi_online.logout_log_all_store o ON i.`hashid` = o.`hashid` 
+                            ) a 
+                        WHERE
+                            inTime = (
+                        SELECT
+                            max( inTime ) 
+                        FROM
+                            (
+                        SELECT
+                            i.cube_id,
+                            i.plat_id,
+                            i.`timestamp` AS inTime,
+                            o.`timestamp` AS outTime,
+                            IFNULL( o.`type`, 'unover' ) STATUS 
+                        FROM
+                            bi_online.login_log_all_store i
+                            LEFT JOIN bi_online.logout_log_all_store o ON i.`hashid` = o.`hashid` 
+                            ) b 
+                        WHERE
+                            a.cube_id = b.cube_id 
+                            ) and STATUS='unover'",	
+                            
+    "updateStatusLog":"UPDATE bi_online.all_time_log_all_store SET status=? WHERE cube_id=? and plat_id=?;",		
+							
+							
+    "sqlBatchInsertTmp":"insert into bi_online.all_time_tmp_all_store (
+                              `cube_id` ,
+                              `plat_id`,
+                              `hashid`,
+                              `online_time`
+                            ) values (?,?,?,?,?)",
+     "sqlInsertHistTmp":"insert into bi_online.all_time_tmp_all_store (
+                                `cube_id` ,
+                                `plat_id`,
+                                `hashid`,
+                                `online_time`
+                            ) SELECT
+								`cube_id`,
+								`plat_id`,
+								0,
+								`online_time`
+							FROM
+								bi_online.all_time_log_all_store",
+	 "trancate_histime":"TRUNCATE TABLE bi_online.all_time_log_all_store",
+	 
+	 "sqlInsertStatis":"insert into bi_online.all_time_log_all_store (
+                                `cube_id` ,
+                                `plat_id`,
+                                `online_time`,
+                                `status`
+                            ) SELECT
+								`cube_id`,
+								`plat_id`,
+								sum(`online_time`),
+								0
+							FROM
+								bi_online.all_time_tmp_all_store
+							GROUP BY
+								cube_id ,plat_id",	
+													
+	"deleteLogIn":"DELETE i FROM bi_online.login_log_all_store i
+							WHERE EXISTS (
+										SELECT
+											1
+										FROM
+											bi_online.logout_log_all_store o
+										WHERE
+											i.hashid = o.hashid
+								)",
+	"deleteLogOut":"DELETE FROM bi_online.logout_log_all_store WHERE hashid=? "
+}

@@ -1,0 +1,144 @@
+{
+     "create_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_active_user_ds_yyyymmdd (
+										  `statis_date` int(9) NOT NULL,
+										  `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+										  `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+										  `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+										  `app_version_id` smallint(4) NOT NULL COMMENT '应用的版本',
+										  `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+										  `week_user_count` bigint(20) NOT NULL COMMENT '周活用户数',
+										  `month_user_count` bigint(20) NOT NULL COMMENT '月活用户数',
+										  INDEX `idx_st_active_user_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+									 ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	  "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_active_user_dm_yyyymm (
+                                          `statis_date` int(9) NOT NULL,
+                                          `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                          `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                          `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                          `app_version_id` smallint(4) NOT NULL COMMENT '应用的版本',
+                                          `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+                                          `week_user_count` bigint(20) NOT NULL COMMENT '周活用户数',
+                                          `month_user_count` bigint(20) NOT NULL COMMENT '月活用户数',
+                                          INDEX `idx_st_active_user_dm_yyyymm` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+                                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	 "drop_tmp_ds_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp_spap.tmp_st_active_user_yyyymmdd",
+	
+	 "create_tmp_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp_spap.tmp_st_active_user_yyyymmdd (
+										  `statis_date` int(9) NOT NULL,
+										  `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+										  `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+										  `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+										  `app_version_id` smallint(4) NOT NULL COMMENT '应用的版本',
+										  `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+										  `week_user_count` bigint(20) NOT NULL COMMENT '周活用户数',
+										  `month_user_count` bigint(20) NOT NULL COMMENT '月活用户数',
+										  INDEX `idx_st_active_user_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+									 ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	 "insertTmpDsSql": "INSERT INTO bi_tmp_spap.tmp_st_active_user_yyyymmdd (
+										`statis_date`,
+										`hour`,
+										`channel_id`,
+										`app_plat_id`,
+										`app_version_id`,
+										`signin_user_count`,
+										`week_user_count`,
+										`month_user_count`
+									)",
+						
+	 "selectTmpSignUserDsSql": "SELECT
+										ifnull(`statis_date` ,- 1) AS statis_date,
+										ifnull(`hour` ,- 1) AS hour,
+										-1 AS channel_id,
+										ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+										ifnull(`app_version_id` ,- 1) AS app_version_id,
+										COUNT(distinct `user_id`) AS signin_user_count,
+										0 AS week_user_count,
+										0 AS month_user_count
+									FROM
+										bi_dw_spap.dw_login_log_all_store
+									WHERE
+										1 = 1
+									AND `statis_date` = ${store_id}",
+															 					
+	 "selectTmpWeekUserDsSql": "SELECT
+										${statis_date} AS statis_date,
+										ifnull(`hour` ,- 1) AS hour,
+										-1 AS channel_id,
+										ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+										ifnull(`app_version_id` ,- 1) AS app_version_id,
+										0 AS signin_user_count,
+										COUNT(distinct `user_id`) AS week_user_count,
+										0 AS month_user_count
+									FROM
+										bi_dw_spap.dw_login_log_all_store
+									WHERE
+										1 = 1
+									AND `statis_date` >= ${min_id} 
+									AND `statis_date` <= ${max_id}",
+									
+	 "selectTmpMonthUserDsSql": "SELECT
+										${statis_date} AS statis_date,
+										ifnull(`hour` ,- 1) AS hour,
+										-1 AS channel_id,
+										ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+										ifnull(`app_version_id` ,- 1) AS app_version_id,
+										0 AS signin_user_count,
+										0 AS week_user_count,
+										COUNT(distinct `user_id`) AS month_user_count
+									FROM
+										bi_dw_spap.dw_login_log_all_store
+									WHERE
+										1 = 1
+									AND `statis_date` >= ${min_id} 
+									AND `statis_date` <= ${max_id}",
+						
+	 "insertDsSelectSql": "INSERT INTO bi_st_spap.st_active_user_ds_yyyymmdd (
+										`statis_date`,
+										`hour`,
+										`channel_id`,
+										`app_plat_id`,
+										`app_version_id`,
+										`signin_user_count`,
+										`week_user_count`,
+										`month_user_count`
+									) SELECT
+										`statis_date`,
+										`hour`,
+										`channel_id` ,
+										`app_plat_id`,
+										`app_version_id`,
+										sum(`signin_user_count`) AS 'signin_user_count',
+										sum(`week_user_count`) AS week_user_count,
+										sum(`month_user_count`) AS month_user_count
+									FROM
+										bi_tmp_spap.tmp_st_active_user_yyyymmdd
+									WHERE
+										1 = 1
+									AND `statis_date` = ${store_id} 
+									GROUP BY
+										`statis_date`,
+										`hour`,
+										`channel_id`,
+										`app_plat_id`,
+										`app_version_id`",
+										
+	 "insertDmSelectSql": "INSERT INTO bi_st_spap.st_active_user_dm_yyyymm (
+                                `statis_date`,
+                                `hour`,
+                                `channel_id`,
+                                `app_plat_id`,
+                                `app_version_id`,
+                                `signin_user_count`,
+                                `week_user_count`,
+                                `month_user_count`
+                            ) SELECT
+                                *
+                            FROM
+                                bi_st_spap.st_active_user_ds_yyyymmdd",
+										
+	"drop_active_user_ds": "drop TABLE IF EXISTS  bi_st_spap.st_active_user_ds_yyyymmdd",
+	"delete_yes_date":"delete from bi_st_spap.st_active_user_dm_yyyymm where 1=1 AND statis_date = ${statisDate} "
+}

@@ -1,0 +1,100 @@
+{
+	   "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_trend_analysis_dm_yyyymm (
+                                    `statis_date` int(9) NOT NULL,
+                                    `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                    `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                    `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                    `app_version_id` smallint(4) NOT NULL COMMENT '应用的版本',
+                                    `new_user_count` bigint(20) NOT NULL COMMENT '注册用户数',
+                                    `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+                                    `signin_times_count` bigint(20) NOT NULL COMMENT '登录次数',
+                                    INDEX `idx_st_overview_analysis_dm_yyyymm` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	 "drop_tmp_ds_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp_spap.tmp_st_trend_analysis_yyyymmdd",
+	
+	 "create_tmp_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp_spap.tmp_st_trend_analysis_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+                                    `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` smallint(4) NOT NULL COMMENT '应用的版本',
+								    `new_user_count` bigint(20) NOT NULL COMMENT '注册用户数',
+								    `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+								    `signin_times_count` bigint(20) NOT NULL COMMENT '登录次数',
+								    INDEX `idx_tmp_st_trend_analysis_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+							    ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	 "insertTmpDsSql": "INSERT INTO bi_tmp_spap.tmp_st_trend_analysis_yyyymmdd (
+									`statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+									`app_version_id`,
+									`new_user_count`,
+									`signin_user_count`,
+									`signin_times_count`
+								)",
+						
+	 "selectTmpNewUserDsSql": "SELECT
+									ifnull(`statis_date` ,- 1) AS statis_date,
+									ifnull(`hour` ,- 1) AS hour,
+									-1 AS channel_id,
+									ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+									ifnull(`app_version_id` ,- 1) AS app_version_id,
+									COUNT(distinct user_id  ) AS 'new_user_count',
+									0 AS signin_user_count,
+									0 AS signin_times_count
+								FROM
+									bi_dw_spap.dw_new_user_all_store 
+								WHERE
+									1 = 1
+								AND `new_user`= ${is_new}
+								AND `statis_date` = ${store_id}",
+						
+	 "selectTmpSignUserDsSql": "SELECT
+									ifnull(`statis_date` ,- 1) AS statis_date,
+									ifnull(`hour` ,- 1) AS hour,
+									-1 AS channel_id,
+									ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+									ifnull(`app_version_id` ,- 1) AS app_version_id,
+									0 AS 'new_user_count',
+									count(DISTINCT user_id) AS signin_user_count,
+									sum(`visit_count`) AS signin_times_count
+								FROM
+									bi_dw_spap.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+						
+	"insertDmSelectSql": "INSERT INTO bi_st_spap.st_trend_analysis_dm_yyyymm (
+									`statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+									`app_version_id`,
+									`new_user_count`,
+									`signin_user_count`,
+									`signin_times_count`
+								) SELECT
+									`statis_date`,
+									`hour`,
+									`channel_id` ,
+									`app_plat_id`,
+									`app_version_id`,
+									sum(`new_user_count`) AS 'new_user_count',
+									sum(`signin_user_count`) AS signin_user_count,
+									sum(`signin_times_count`) AS signin_times_count
+								FROM
+									bi_tmp_spap.tmp_st_trend_analysis_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id} 
+								GROUP BY
+									`statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+									`app_version_id`",
+	 "delete_yes_date":"delete from bi_st_spap.st_trend_analysis_dm_yyyymm where 1=1 AND statis_date = ${statisDate}"
+}

@@ -1,0 +1,53 @@
+{
+     "selectLoginLogLimit": "SELECT
+									`user_id`,
+									`timestamp`,
+									`app_device_type` as app_plat_id,
+									`app_version` as app_version_id,
+									`oper_ip`,
+									`network` as network_id,
+									`channel`,
+									`device_vendor` as manufacturer_id,
+									`device_model` as manufacturer_model_id,
+									`os_name` as os_id,
+									`os_version` as os_version_id,
+									`year`,
+									`month`,
+									`day`,
+									`hour`,
+									`store_id`
+								FROM
+									bi_interface_spap.spap_login_log_yyyymmdd
+								limit ${offset},${rows}",
+								
+	 "create_ods_loginLog": "CREATE TABLE IF NOT EXISTS bi_ods_spap.ods_login_log_dm_yyyymm (
+									`user_id` BIGINT (11) NOT NULL COMMENT '用户ID',
+									`timestamp` BIGINT (13) DEFAULT NULL COMMENT '登录登出时间',
+									`oper_ip` VARCHAR (32) DEFAULT NULL COMMENT '登陆登出IP地址',
+									
+									`network_id` INT (10) DEFAULT NULL COMMENT 'network 网络类型维表dim_network字典匹配自增获取',
+									`channel` INT (4) DEFAULT '1000' COMMENT '渠道（0-官方）',
+									`app_plat_id` INT (10) DEFAULT NULL COMMENT 'app_device_type  平台应用类型维表dim_app_plat字典匹配自增获取',
+									`app_id` INT (4) DEFAULT NULL COMMENT 'app_id',
+									`app_version_id` INT (10) DEFAULT '1.5' COMMENT 'app_version 平台应用 版本维表conf_app_version字典匹配自增获取',
+									`os_id` INT (10) DEFAULT NULL COMMENT 'os_name 操作系统维表dim_os字典匹配自增获取',
+									`os_version_id` INT (10) DEFAULT NULL COMMENT 'os_version 操作系统版本维表dim_os_version字典匹配自增获取',
+									`manufacturer_id` INT (10) DEFAULT NULL COMMENT 'device_vendor 设备生产厂家维表dim_manufacturer字典匹配自增获取',
+									`manufacturer_model_id` INT (10) DEFAULT NULL COMMENT 'device_model 设备型号维表dim_manufacturer_model字典匹配自增获取',
+									`isp_id` INT (10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 固网运营商字典维表dim_isp字典匹配自增获取',
+									`country_id` INT (10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 国家字典表维表dim_country字典匹配自增获取',
+									`region_id` INT (10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 省/地区维表dim_region字典匹配自增获取',
+									`city_id` INT (10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 地市维表dim_city字典匹配自增获取',
+									
+									`year` INT (9) NOT NULL DEFAULT '1900' COMMENT '年',
+									`month` INT (9) NOT NULL DEFAULT '0' COMMENT '月',
+									`day` INT (9) NOT NULL DEFAULT '0' COMMENT '日',
+									`hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+									`store_id` INT (9) NOT NULL DEFAULT '19000101' COMMENT '时间id',
+									INDEX `idx_ods_login_log_date` (`year`, `month`, `day`),
+									INDEX `idx_ods_login_log_range` (`store_id`)
+								) ENGINE = MyISAM DEFAULT CHARSET = utf8",
+	 "delete_yes_date":"delete from bi_ods_spap.ods_login_log_dm_yyyymm where 1=1 AND store_id = ${statisDate}",
+	 "delete_table":"drop TABLE IF EXISTS bi_ods_spap.ods_login_log_dm_yyyymm ;",
+     "delete_date":"delete from bi_ods_spap.ods_login_log_dm_yyyymm where 1=1 AND store_id < ${statisDate} "
+}

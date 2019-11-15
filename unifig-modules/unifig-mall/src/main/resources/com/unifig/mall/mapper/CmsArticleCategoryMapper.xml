@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.CmsArticleCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.CmsArticleCategory">
+        <result column="id" property="id"/>
+        <result column="cat_name" property="catName"/>
+        <result column="cat_type" property="catType"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="cat_desc" property="catDesc"/>
+        <result column="keywords" property="keywords"/>
+        <result column="cat_alias" property="catAlias"/>
+        <result column="create_time" property="createTime"/>
+        <result column="edit_time" property="editTime"/>
+        <result column="ratel_no" property="ratelNo"/>
+        <result column="enable" property="enable"/>
+        <result column="pic" property="pic"/>
+        <result column="show_status" property="showStatus"/>
+        <result column="nav_status" property="navStatus"/>
+    </resultMap>
+
+
+    <!-- 可根据自己的需求，是否要使用 HomeCmsArticleCategoryVo -->
+    <resultMap id="homeCmsArticleCategoryVo" type="com.unifig.mall.bean.vo.HomeCmsArticleCategoryVo">
+        <id column="id" property="id"/>
+        <result column="cat_name" property="catName"/>
+        <result column="pic" property="pic"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, cat_name AS catName,pic,cat_type AS catType, parent_id AS parentId, show_in_nav AS showInNav, sort_order AS sortOrder, cat_desc AS catDesc, keywords, cat_alias AS catAlias, create_time AS createTime, edit_time AS editTime, ratel_no AS ratelNo, enable
+    </sql>
+
+
+    <select id="selectHomeList" resultMap="homeCmsArticleCategoryVo">
+        select cac.* from cms_article_category cac
+        WHERE enable = 1 and nav_status = 1
+        ORDER BY sort_order DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+</mapper>

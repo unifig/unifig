@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="etl.dispatch.config.dao.IConfInfoPythonScriptDao">
+   <resultMap id="ConfInfoPythonScriptEntityMap" type="etl.dispatch.config.entity.ConfInfoPythonScriptEntity">
+		<result column="pk_id" property="pkId" />
+		<result column="script_name" property="scriptName" />
+		<result column="preset_param" property="presetParam" />
+		<result column="script_path" property="scriptPath" />
+		<result column="personal" property="personal" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<parameterMap id="ConfInfoPythonScriptEntity" type="etl.dispatch.config.entity.ConfInfoPythonScriptEntity"/>
+	
+	<sql id="All_Column_List">
+		`pk_id` , `script_name` , `preset_param` , `script_path` , `personal` , `status` , `create_user` , `create_time` , `update_user` , `update_time` 
+	</sql>
+	
+	<select id="findConfInfoPythonScript"  parameterMap="ConfInfoPythonScriptEntity" resultMap="ConfInfoPythonScriptEntityMap">
+		select
+		    <include refid="All_Column_List" />
+		from 
+		     `conf_info_python_script`
+		WHERE 
+		     1=1 
+		<if test='pkId!=null'>
+			AND pk_id =#{pkId}
+		</if>
+		<if test='scriptName!=null'>
+			AND script_name =#{scriptName}
+		</if>
+		<if test='personal!=null'>
+			AND personal =#{personal}
+		</if>
+		<if test='status!=null'>
+			AND status =#{status}
+		</if>
+	</select>
+</mapper>

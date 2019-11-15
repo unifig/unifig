@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="com.unifig.organ.dao.UmsSysConfigDao">
+	<select id="queryObject" resultType="com.unifig.organ.model.SysConfigEntity">
+		select * from ums_sys_config where id = #{id}
+	</select>
+	
+	<select id="queryList" parameterType="map" resultType="com.unifig.organ.model.SysConfigEntity">
+		select * from ums_sys_config where status = 1
+		<if test="key != null and key.trim() != ''">
+			and `key` like concat('%',#{key},'%') 
+		</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from ums_sys_config where status = 1
+		<if test="key != null and key.trim() != ''">
+			and `key` like concat('%',#{key},'%')
+		</if>
+	</select>
+	
+	<insert id="save" parameterType="com.unifig.organ.model.SysConfigEntity">
+		insert into ums_sys_config(`key`, `value`, remark)
+			values(#{key},#{value},#{remark})
+	</insert>
+	
+	<update id="update" parameterType="com.unifig.organ.model.SysConfigEntity">
+		update ums_sys_config set `key` = #{key}, `value` = #{value}, remark = #{remark}
+			 where id = #{id}
+	</update>
+	
+	<!-- 根据key，更新value -->
+	<update id="updateValueByKey" parameterType="map">
+		update ums_sys_config set `value` = #{value} where `key` = #{key}
+	</update>
+	
+	<!-- 根据key，查询value -->
+	<select id="queryByKey" parameterType="string" resultType="string">
+		select value from ums_sys_config where `key` = #{key}
+	</select>
+	
+	<delete id="deleteBatch" parameterType="int">
+		delete from ums_sys_config where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	
+</mapper>

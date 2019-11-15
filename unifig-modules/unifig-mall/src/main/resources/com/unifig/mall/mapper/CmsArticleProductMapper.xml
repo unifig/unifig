@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.CmsArticleProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.CmsArticleProduct">
+        <id column="id" property="id" />
+        <result column="article_id" property="articleId" />
+        <result column="product_id" property="productId" />
+        <result column="product_name" property="productName" />
+        <result column="product_cat_id" property="productCatId" />
+        <result column="product_cat_name" property="productCatName" />
+        <result column="product_pic" property="productPic" />
+        <result column="product_subTitle" property="productSubtitle" />
+        <result column="product_price" property="productPrice" />
+        <result column="create_time" property="createTime" />
+        <result column="edit_time" property="editTime" />
+        <result column="ratel_no" property="ratelNo" />
+        <result column="enable" property="enable" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, article_id, product_id, product_name, product_pic, product_subTitle, product_price, create_time, edit_time, ratel_no, enable,product_cat_id,product_cat_name
+    </sql>
+
+</mapper>

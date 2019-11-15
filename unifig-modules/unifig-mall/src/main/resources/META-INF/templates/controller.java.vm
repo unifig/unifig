@@ -1,0 +1,105 @@
+/**
+ * FileName: $!{table.comment}
+ * Author:   ${author}
+ * Date:     ${date}
+ * Description: $!{table.comment}
+ * History:
+ * <author>          <time>          <version>          <desc>
+ */
+package ${package.Controller};
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.*;
+import com.unifig.result.ResultData;
+import java.util.List;
+import ${package.Service}.${table.serviceName};
+import ${package.Entity}.${entity};
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@RestController
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@Api(value = "#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}")
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+	private Logger logger=LoggerFactory.getLogger(getClass());
+
+	@Autowired
+	private ${table.serviceName} ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
+
+	/**
+ 	* 查询分页数据
+	 */
+	@ApiOperation(value = "查询分页数据")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "pageNum", value = "当前页", required = true, dataType = "int", paramType = "query"),
+		@ApiImplicitParam(name = "pageSize", value = "单页条数", required = true, dataType = "int", paramType = "query")
+	})
+	@GetMapping(value = "/list")
+	public ResultData<${entity}> findListByPage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,@RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+		return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.findListByPage(pageNum,pageSize);
+	}
+
+
+	/**
+	 * 根据id查询
+ 	*/
+	@ApiOperation(value = "根据id查询数据")
+	@ApiImplicitParam(name = "id", value = "主键ID", required = true, dataType = "String", paramType = "query")
+	@GetMapping(value = "/getById")
+	public ResultData<${entity}> getById(@RequestParam("id") String id){
+		return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id);
+	}
+
+	/**
+ 	* 新增
+ 	*/
+	@ApiOperation(value = "新增数据")
+	@PostMapping(value = "/add")
+	public ResultData add(@RequestBody ${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}){
+		return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.add(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+	}
+
+	/**
+ 	* 删除
+ 	*/
+	@ApiOperation(value = "删除数据")
+	@GetMapping(value = "/del")
+	public ResultData delete(@RequestParam("ids") List<String> ids){
+		return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.delete(ids);
+	}
+
+	/**
+ 	* 修改
+ 	*/
+	@ApiOperation(value = "更新数据")
+	@PostMapping(value = "/update")
+	public ResultData update(@RequestBody ${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}){
+		return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.update(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+	}
+
+}

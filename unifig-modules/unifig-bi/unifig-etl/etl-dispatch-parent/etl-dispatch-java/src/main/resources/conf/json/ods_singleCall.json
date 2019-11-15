@@ -1,0 +1,68 @@
+{
+    "selectSingleCallLogLimit":"SELECT
+                                    e.`master`,
+                                    e.`timestamp`,
+                                    e.`create_time`,
+                                    e.`answered_time`,
+                                    e.`profile_create_time`,
+                                    e.`hangup_time`,
+                                    e.`out_audio_bytes`,
+                                    e.`in_audio_bytes`,
+                                    e.`out_video_bytes`,
+                                    e.`in_video_bytes`,
+                                    e.`call_type`,
+                                    e.`duration`,
+                                    e.`action`,
+                                    e.`caller`,
+                                    e.`callee`,
+                                    e.`network_type` As network_type_id ,
+                                    e.`network_addr` As oper_ip ,
+                                    e.`app_device_type` AS app_plat_id,
+                                    e.`app_version` AS app_version_id,   
+                                    e.`year`,
+                                    e.`month`,
+                                    e.`day`,
+                                    e.`hour`,
+                                    e.`store_id`
+                                FROM
+                                    bi_interface.engine_singlecall_log_yyyymmdd e
+                                limit ${offset},${rows}",
+
+    "create_ods_singleCallLog":"CREATE TABLE IF NOT EXISTS  bi_ods.ods_engine_singlecall_log_dm_yyyymm (  
+                                    `master` varchar(32) NOT NULL COMMENT '发送者',  
+                                    `timestamp` bigint(13) DEFAULT NULL COMMENT '日志产生时间', 
+                                    `create_time` bigint(13) DEFAULT NULL COMMENT '语音创建时间',  
+                                    `answered_time` bigint(13) DEFAULT NULL COMMENT '应答时间',  
+                                    `profile_create_time` bigint(13) DEFAULT NULL COMMENT '通话开始时间',  
+                                    `hangup_time` bigint(13) DEFAULT NULL COMMENT '挂断时间',  
+                                    `out_audio_bytes` bigint(13) DEFAULT NULL COMMENT '语音上行流量',  
+                                    `in_audio_bytes` bigint(13) DEFAULT NULL COMMENT '语音下行流量',  
+                                    `out_video_bytes` bigint(13) DEFAULT NULL COMMENT '视频上行流量',  
+                                    `in_video_bytes` bigint(13) DEFAULT NULL COMMENT '视屏下行流量',  
+                                    `call_type` int(2) DEFAULT NULL COMMENT '1-语音，2-视频',  
+                                    `duration` int(10) DEFAULT NULL COMMENT '时长,单位s',  
+                                    `action` varchar(255) DEFAULT NULL COMMENT '流量产生动作',  
+                                    `caller` int(10) DEFAULT NULL COMMENT '呼叫方',  
+                                    `callee` int(10) DEFAULT NULL COMMENT '被叫方',  
+                                    `network_type_id` int(2) DEFAULT NULL COMMENT '流量类型(3G,4G,Wifi)',  
+                                    `isp_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 固网运营商字典维表dim_isp字典匹配自增获取',
+                                    `country_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 国家字典表维表dim_country字典匹配自增获取',
+                                    `region_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 省/地区维表dim_region字典匹配自增获取',
+                                    `city_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 地市维表dim_city字典匹配自增获取',
+                                    `app_plat_id` int(2) DEFAULT NULL COMMENT '坐标登录处自取',  
+                                    `app_id` int(2) DEFAULT NULL COMMENT 'app_id',  
+                                    `app_version_id` varchar(32) DEFAULT NULL COMMENT '坐标版本号（自取）',  
+                                    `year` int(10) DEFAULT NULL COMMENT '年',  
+                                    `month` int(10) DEFAULT NULL COMMENT '月',  
+                                    `day` int(10) DEFAULT NULL COMMENT '日',  
+                                    `hour` int(10) DEFAULT NULL COMMENT '小时',  
+                                    `store_id` int(10) DEFAULT NULL COMMENT '分区',
+                                    INDEX `idx_ods_message_log_ds_date` (`year`, `month`, `day`),
+                                    INDEX `idx_ods_message_log_ds_range` (`store_id`)
+                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+                                
+         "delete_yes_date":"delete from bi_ods.ods_engine_singlecall_log_dm_yyyymm where 1=1 AND store_id = ${statisDate} ",
+         "delete_table":"drop TABLE IF EXISTS bi_ods.ods_engine_singlecall_log_dm_yyyymm ;",
+         "delete_date":"delete from bi_ods.ods_engine_singlecall_log_dm_yyyymm where 1=1 AND store_id < ${statisDate} "
+
+}

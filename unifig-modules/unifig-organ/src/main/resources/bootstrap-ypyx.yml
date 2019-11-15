@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: unifig-organ
+  cloud:
+    config:
+      uri: http://172.18.0.4:10010
+      profile: ypyx
+      label: master

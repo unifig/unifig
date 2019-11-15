@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="etl.dispatch.boot.dao.ConfUserInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="etl.dispatch.boot.entity.ConfUserInfo">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="user_name" property="userName" />
+		<result column="pass_word" property="passWord" />
+		<result column="phone" property="phone" />
+		<result column="mail" property="mail" />
+		<result column="cuser" property="cuser" />
+		<result column="ctime" property="ctime" />
+		<result column="muser" property="muser" />
+		<result column="mtime" property="mtime" />
+		<result column="status" property="status" />
+	</resultMap>
+
+</mapper>

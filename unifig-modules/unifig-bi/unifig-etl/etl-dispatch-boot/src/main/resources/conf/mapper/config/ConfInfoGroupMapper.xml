@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="etl.dispatch.boot.dao.ConfInfoGroupMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="etl.dispatch.boot.entity.ConfInfoGroup">
+		<id column="pk_id" property="pkId" />
+		<result column="classify_id" property="classifyId" />
+		<result column="group_name" property="groupName" />
+		<result column="tasks_cron" property="tasksCron" />
+		<result column="report_notice" property="reportNotice" />
+		<result column="remark" property="remark" />
+		<result column="effective_start" property="effectiveStart" />
+		<result column="effective_end" property="effectiveEnd" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<select id="selectRely" resultType="java.util.Map">
+	
+		SELECT
+		DISTINCT
+		    g.group_name    `groupName`,g.pk_id `pkId`,g.classify_id `classifyId`,IFNULL(g.tasks_cron , 0) cron,IFNULL(g.`status`,-1) groupStatus,
+		IFNULL((
+		        SELECT
+		            is_success
+		        FROM
+		            sign_info_tasks st
+		        WHERE
+		            st.classify = 2
+		        AND st.task_id = r.group_id
+		        ORDER BY
+		            log_time DESC
+		        LIMIT 1
+		    ),0) `isSuccess`,
+		    IFNULL((
+		        SELECT
+		            is_success
+		        FROM
+		            sign_info_tasks st
+		        WHERE
+		            st.classify = 2
+		        AND st.task_id = r.group_id
+				and date_sub(curdate(),interval 1 day) = DATE_FORMAT(log_time,'%Y-%m-%d')
+		        ORDER BY
+		            log_time DESC
+		        LIMIT 1
+		    ),0) `yesterdaySuccess`,
+		    IFNULL((
+		        SELECT
+		            message
+		        FROM
+		            sign_info_tasks st
+		        WHERE
+		            st.classify = 2
+		        AND st.task_id = r.group_id
+		        ORDER BY
+		            log_time DESC
+		        LIMIT 1
+		    ),'') `message`,
+		    (
+		        SELECT
+		            log_time
+		        FROM
+		            sign_info_tasks st
+		        WHERE
+		            st.classify = 2
+		        AND st.task_id = r.group_id
+		        ORDER BY
+		            log_time DESC
+		        LIMIT 1
+		    ) `logTime`
+		
+		FROM
+		    conf_rely_group r
+		LEFT JOIN conf_info_group g ON g.pk_id = r.group_id
+		WHERE
+		    r.`status` = 1
+		AND g.classify_id = #{classifyId}
+	</select>
+
+</mapper>

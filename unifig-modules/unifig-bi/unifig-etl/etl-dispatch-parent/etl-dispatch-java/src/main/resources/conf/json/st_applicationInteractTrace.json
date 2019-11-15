@@ -1,0 +1,75 @@
+{
+	  "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st.st_event_analysis_dm_yyyymm (
+                            `statis_date` int(9) NOT NULL,
+                            `hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+                            `app_version_id` MEDIUMINT (9) NOT NULL,
+                            `channel_id` int(9) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+                            `app_plat_id` int(9) NOT NULL DEFAULT '0' COMMENT '应用类型ID',
+                            `interaction_view_id` MEDIUMINT (9) NOT NULL,
+                            `time_slice` smallint(6) NOT NULL DEFAULT '1',
+                            `visit_count` bigint(20) NOT NULL  COMMENT '访问次数',
+                            `device_count` bigint(20) NOT NULL  COMMENT '访问设备数',
+                            INDEX `idx_st_event_analysis_dm` (`statis_date`)
+                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						
+	 "insertDmSql": "INSERT INTO bi_st.st_event_analysis_dm_yyyymm (
+							`statis_date`,
+							`hour`,
+							`app_version_id`,
+							`channel_id`,
+							`app_plat_id`,
+							`interaction_view_id`,
+							`visit_count`,
+							`device_count`
+						)",
+						
+	 "selectDsSql": "SELECT
+							ifnull(dw.`statis_date` ,- 1) AS statis_date,
+							ifnull(dw.`hour` ,- 1) AS hour,
+							ifnull(dw.`app_version_id` ,- 1) AS app_version_id,
+							ifnull(dw.`channel_id` ,- 1) AS channel_id,
+							ifnull(dw.`app_plat_id` ,- 1) AS app_plat_id,
+							ifnull(dw.`interaction_view_id` ,- 1) AS interaction_view_id,
+							sum(dw.`visit_count`) AS visit_count,
+							count(DISTINCT dw.device_id) AS device_count
+						FROM
+							bi_dw.dw_interact_trace_dm_yyyymm dw
+						WHERE
+							1 = 1
+						AND dw.`statis_date` = ${store_id}",
+						
+	 "insertDtSql": "INSERT INTO bi_st.st_event_analysis_dm_yyyymm (
+							`statis_date`,
+							`hour`,
+							`app_version_id`,
+							`channel_id`,
+							`app_plat_id`,
+							`interaction_view_id`,
+							`time_slice`,
+							`visit_count`,
+							`device_count`
+						)",
+						
+	 "selectDtSql": "SELECT
+							${statis_date} AS statis_date,
+							ifnull(dw.`hour` ,- 1) AS hour,
+							ifnull(dw.`app_version_id` ,- 1) AS app_version_id,
+							ifnull(dw.`channel_id` ,- 1) AS channel_id,
+							ifnull(dw.`app_plat_id` ,- 1) AS app_plat_id,
+							ifnull(dw.`interaction_view_id` ,- 1) AS interaction_view_id,
+							${time_slice} AS time_slice,
+							sum(dw.`visit_count`) AS visit_count,
+							count(DISTINCT dw.device_id) AS visit_count
+						FROM
+							(
+							 ${selectFrom}
+							) dw
+						WHERE
+							1 = 1
+						AND dw.`statis_date`>= ${min_id}
+						AND dw.`statis_date`<= ${max_id}",
+	 "selectFrom":"select * from bi_dw.dw_interact_trace_dm_yyyymm",
+						
+     "insertDtTimeSlice":"7,30,60",
+     "delete_yes_date":"delete from bi_st.st_event_analysis_dm_yyyymm where 1=1 AND statis_date = ${statisDate}"
+}

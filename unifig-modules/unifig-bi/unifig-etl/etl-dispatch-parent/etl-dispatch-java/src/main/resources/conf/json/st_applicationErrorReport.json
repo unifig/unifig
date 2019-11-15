@@ -1,0 +1,62 @@
+{
+     "create_dm_yyyymm": "CREATE TABLE  IF NOT EXISTS bi_st.st_error_analysis_dm_yyyymm (
+						    `statis_date` int(9) NOT NULL,
+							`hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+							`channel_id` int(9) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+                            `app_plat_id` int(9) NOT NULL DEFAULT '0' COMMENT '应用类型ID',
+							`app_version_id` MEDIUMINT (9) NOT NULL COMMENT '坐标版本',
+							`manufacturer_model_id` SMALLINT (9) NOT NULL COMMENT '设备型号',
+							`os_id` SMALLINT (9) NOT NULL COMMENT '操作系统',
+							`error_type` varchar(255) NOT NULL COMMENT '错误类型',
+							`error_level` int(9) DEFAULT '0' COMMENT '类型等级:0：高，1：中，2：低',
+							`error_count` bigint(20) NOT NULL  COMMENT '错误次数',
+							`device_id` BIGINT (20) NOT NULL,
+							INDEX `idx_st_error_analysis_dm` (`statis_date`)
+						) ENGINE=MyISAM DEFAULT CHARSET=utf8 ",
+	 "selectPartitionSql": "select partition_name part from information_schema.PARTITIONS  where TABLE_SCHEMA = 'bi_st' and TABLE_NAME='st_error_analysis_dm_yyyymm'",
+	 
+	 "addPartitionSql": "ALTER TABLE bi_st.st_error_analysis_dm_yyyymm ADD PARTITION (PARTITION p${yyyymmdd} VALUES LESS THAN (${yyyymmdd}))",
+	  					
+	 "insertDmSelectSql": "INSERT INTO 
+	                         bi_st.st_error_analysis_dm_yyyymm (
+                             `statis_date`,
+							 `hour`,
+							 `channel_id`,
+							 `app_plat_id`,
+							 `app_version_id`,
+							 `manufacturer_model_id`,
+							 `os_id`,
+							 `error_type`,
+							 `error_level`,
+							 `error_count`,
+							 `device_id`
+						) SELECT
+							 `statis_date`,
+							 `hour`,
+							 `channel_id`,
+							 `app_plat_id`,
+							 `app_version_id` as app_version_id,
+							 `manufacturer_model_id`,
+							 `os_id`,
+							 `error_type`,
+							 `error_level`,
+							 sum(`error_count`) AS error_count,
+							 `device_id`
+						FROM
+							bi_dw.dw_error_report_dm_yyyymm
+						WHERE
+							1 = 1
+						AND  `statis_date` = ${store_id}
+						GROUP BY
+						     `statis_date`,
+							 `hour`,
+							 `channel_id`,
+							 `app_plat_id`,
+							 `app_version_id`,
+							 `manufacturer_model_id`,
+							 `os_id`,
+							 `error_type`,
+							 `error_level`,
+							 `device_id`",
+	  "delete_yes_date":"delete from bi_st.st_error_analysis_dm_yyyymm where 1=1 AND statis_date = ${statisDate}"
+}

@@ -1,0 +1,643 @@
+{
+   "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st.st_function_statistic_dm_yyyymm (
+                                          `statis_date` int(9) NOT NULL,
+                                          `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                          `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                          `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                          `app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+                                          `single_text_count` bigint(20) NOT NULL COMMENT '单聊文本数',
+                                          `single_text_size` bigint(20) NOT NULL COMMENT '单聊文本大小',
+                                          `single_picture_count` bigint(20) NOT NULL COMMENT '单聊图片数',
+                                          `single_picture_size` bigint(20) NOT NULL COMMENT '单聊图片大小',
+                                          `single_file_count` bigint(20) NOT NULL COMMENT '单聊文件数',
+                                          `single_file_size` bigint(20) NOT NULL COMMENT '单聊文件大小',
+                                          `single_short_voice_count` bigint(20) NOT NULL COMMENT '单聊短语音数',
+                                          `single_short_voice_time` bigint(20) NOT NULL COMMENT '单聊短语音时长',
+                                          `single_short_video_count` bigint(20) NOT NULL COMMENT '单聊短视频数',
+                                          `single_short_video_time` bigint(20) NOT NULL COMMENT '单聊短视频时长',
+                                          `single_voice_count` bigint(20) NOT NULL COMMENT '单聊语音通话数',
+                                          `single_voice_time` bigint(20) NOT NULL COMMENT '单聊语音通话时长',
+                                          `single_video_count` bigint(20) NOT NULL COMMENT '单聊视频通话数',
+                                          `single_video_time` bigint(20) NOT NULL COMMENT '单聊视频通话时长',
+                                          `group_text_count` bigint(20) NOT NULL COMMENT '群聊文本数',
+                                          `group_text_size` bigint(20) NOT NULL COMMENT '群聊文本大小',
+                                          `group_picture_count` bigint(20) NOT NULL COMMENT '群聊图片数',
+                                          `group_picture_size` bigint(20) NOT NULL COMMENT '群聊图片大小',
+                                          `group_file_count` bigint(20) NOT NULL COMMENT '群聊文件数',
+                                          `group_file_size` bigint(20) NOT NULL COMMENT '群聊文件大小',
+                                          `group_short_voice_count` bigint(20) NOT NULL COMMENT '群聊短语音数',
+                                          `group_short_voice_time` bigint(20) NOT NULL COMMENT '群聊短语音时长',
+                                          `group_short_video_count` bigint(20) NOT NULL COMMENT '群聊短视频数',
+                                          `group_short_video_time` bigint(20) NOT NULL COMMENT '群聊短视频时长',
+                                          INDEX `idx_st_function_statistic_dm_yyyymm` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+                                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+                                     
+       "create_tmp_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_function_statistic_yyyymmdd (
+                                          `statis_date` int(9) NOT NULL,
+                                          `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                          `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                          `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                          `app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+                                          `single_text_count` bigint(20) NOT NULL COMMENT '单聊文本数',
+                                          `single_text_size` bigint(20) NOT NULL COMMENT '单聊文本大小',
+                                          `single_picture_count` bigint(20) NOT NULL COMMENT '单聊图片数',
+                                          `single_picture_size` bigint(20) NOT NULL COMMENT '单聊图片大小',
+                                          `single_file_count` bigint(20) NOT NULL COMMENT '单聊文件数',
+                                          `single_file_size` bigint(20) NOT NULL COMMENT '单聊文件大小',
+                                          `single_short_voice_count` bigint(20) NOT NULL COMMENT '单聊短语音数',
+                                          `single_short_voice_time` bigint(20) NOT NULL COMMENT '单聊短语音时长',
+                                          `single_short_video_count` bigint(20) NOT NULL COMMENT '单聊短视频数',
+                                          `single_short_video_time` bigint(20) NOT NULL COMMENT '单聊短视频时长',
+                                          `single_voice_count` bigint(20) NOT NULL COMMENT '单聊语音通话数',
+                                          `single_voice_time` bigint(20) NOT NULL COMMENT '单聊语音通话时长',
+                                          `single_video_count` bigint(20) NOT NULL COMMENT '单聊视频通话数',
+                                          `single_video_time` bigint(20) NOT NULL COMMENT '单聊视频通话时长',
+                                          `group_text_count` bigint(20) NOT NULL COMMENT '群聊文本数',
+                                          `group_text_size` bigint(20) NOT NULL COMMENT '群聊文本大小',
+                                          `group_picture_count` bigint(20) NOT NULL COMMENT '群聊图片数',
+                                          `group_picture_size` bigint(20) NOT NULL COMMENT '群聊图片大小',
+                                          `group_file_count` bigint(20) NOT NULL COMMENT '群聊文件数',
+                                          `group_file_size` bigint(20) NOT NULL COMMENT '群聊文件大小',
+                                          `group_short_voice_count` bigint(20) NOT NULL COMMENT '群聊短语音数',
+                                          `group_short_voice_time` bigint(20) NOT NULL COMMENT '群聊短语音时长',
+                                          `group_short_video_count` bigint(20) NOT NULL COMMENT '群聊短视频数',
+                                          `group_short_video_time` bigint(20) NOT NULL COMMENT '群聊短视频时长',
+                                          INDEX `idx_st_function_statistic_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+                                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8",      
+                                                             
+    "drop_tmp_ds_yyyymmdd":"drop TABLE IF EXISTS  bi_tmp.tmp_st_function_statistic_yyyymmdd",
+    
+    "delete_yes_date":"delete from bi_st.st_function_statistic_dm_yyyymm where 1=1 AND statis_date = ${statisDate}",
+    
+    "insertTmpDsSql": "INSERT INTO bi_tmp.tmp_st_function_statistic_yyyymmdd (
+                                        `statis_date`,
+                                        `hour`,
+                                        `channel_id`,
+                                        `app_plat_id`,
+                                        `app_version_id`,
+                                        `single_text_count`,
+                                        `single_text_size`,
+                                        `single_picture_count`,
+                                        `single_picture_size`,
+                                        `single_file_count`,
+                                        `single_file_size`,
+                                        `single_short_voice_count`,
+                                        `single_short_voice_time`,
+                                        `single_short_video_count`,
+                                        `single_short_video_time`,
+                                        `single_voice_count`,
+                                        `single_voice_time`,
+                                        `single_video_count`,
+                                        `single_video_time`,
+                                        `group_text_count`,
+                                        `group_text_size`,
+                                        `group_picture_count`,
+                                        `group_picture_size`,
+                                        `group_file_count`,
+                                        `group_file_size`,
+                                        `group_short_voice_count`,
+                                        `group_short_voice_time`,
+                                        `group_short_video_count`,
+                                        `group_short_video_time`
+                                    )",
+                                    
+     "selectSingle_textDsSql": "SELECT
+                                        ifnull(`statis_date` ,- 1) as statis_date,
+                                        ifnull(`hour` ,- 1) as hour,
+                                        -1 as channel_id,
+                                        ifnull(`app_plat_id` ,- 1) as app_plat_id,
+                                        ifnull(`app_version_id` ,- 1) as app_version_id,
+                                        sum(`message_count`) as `single_text_count`,
+                                        sum(`content_size`) as `single_text_size`,
+                                        0 as `single_picture_count`,
+                                        0 as `single_picture_size`,
+                                        0 as `single_file_count`,
+                                        0 as `single_file_size`,
+                                        0 as `single_short_voice_count`,
+                                        0 as `single_short_voice_time`,
+                                        0 as `single_short_video_count`,
+                                        0 as `single_short_video_time`,
+                                        0 as `single_voice_count`,
+                                        0 as `single_voice_time`,
+                                        0 as `single_video_count`,
+                                        0 as `single_video_time`,
+                                        0 as `group_text_count`,
+                                        0 as `group_text_size`,
+                                        0 as `group_picture_count`,
+                                        0 as `group_picture_size`,
+                                        0 as `group_file_count`,
+                                        0 as `group_file_size`,
+                                        0 as `group_short_voice_count`,
+                                        0 as `group_short_voice_time`,
+                                        0 as `group_short_video_count`,
+                                        0 as `group_short_video_time`
+                                    FROM
+                                        bi_dw.dw_engine_message_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id}
+                                    AND `is_group` = 1
+                                    AND (`message_type` =1 or `message_type` =6 or `message_type` =7 or `message_type` = 8)
+                                    ",
+                                    
+        "selectSingle_pictureDsSql": "SELECT
+                                            ifnull(`statis_date` ,- 1) AS statis_date,
+                                            ifnull(`hour` ,- 1) AS HOUR,
+                                            - 1 AS channel_id,
+                                            ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                            ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                            0 AS `single_text_count`,
+                                            0 AS `single_text_size`,
+                                            sum(`message_count`) AS `single_picture_count`,
+                                            sum(`content_size`) AS `single_picture_size`,
+                                            0 AS `single_file_count`,
+                                            0 AS `single_file_size`,
+                                            0 AS `single_short_voice_count`,
+                                            0 AS `single_short_voice_time`,
+                                            0 AS `single_short_video_count`,
+                                            0 AS `single_short_video_time`,
+                                            0 AS `single_voice_count`,
+                                            0 AS `single_voice_time`,
+                                            0 AS `single_video_count`,
+                                            0 AS `single_video_time`,
+                                            0 AS `group_text_count`,
+                                            0 AS `group_text_size`,
+                                            0 AS `group_picture_count`,
+                                            0 AS `group_picture_size`,
+                                            0 AS `group_file_count`,
+                                            0 AS `group_file_size`,
+                                            0 AS `group_short_voice_count`,
+                                            0 AS `group_short_voice_time`,
+                                            0 AS `group_short_video_count`,
+                                            0 AS `group_short_video_time`
+                                        FROM
+                                            bi_dw.dw_engine_message_log_dm_yyyymm
+                                        WHERE
+                                            1 = 1
+                                        AND `statis_date` = ${store_id}
+                                        AND `is_group` = 1
+                                        AND `message_type` = 3",
+                                        
+        "selectSingle_fileDsSql": "SELECT
+                                        ifnull(`statis_date` ,- 1) AS statis_date,
+                                        ifnull(`hour` ,- 1) AS HOUR,
+                                        - 1 AS channel_id,
+                                        ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                        ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                        0 AS `single_text_count`,
+                                        0 AS `single_text_size`,
+                                        0 AS `single_picture_count`,
+                                        0 AS `single_picture_size`,
+                                        sum(`message_count`) AS `single_file_count`,
+                                        sum(`content_size`) AS `single_file_size`,
+                                        0 AS `single_short_voice_count`,
+                                        0 AS `single_short_voice_time`,
+                                        0 AS `single_short_video_count`,
+                                        0 AS `single_short_video_time`,
+                                        0 AS `single_voice_count`,
+                                        0 AS `single_voice_time`,
+                                        0 AS `single_video_count`,
+                                        0 AS `single_video_time`,
+                                        0 AS `group_text_count`,
+                                        0 AS `group_text_size`,
+                                        0 AS `group_picture_count`,
+                                        0 AS `group_picture_size`,
+                                        0 AS `group_file_count`,
+                                        0 AS `group_file_size`,
+                                        0 AS `group_short_voice_count`,
+                                        0 AS `group_short_voice_time`,
+                                        0 AS `group_short_video_count`,
+                                        0 AS `group_short_video_time`
+                                    FROM
+                                        bi_dw.dw_engine_message_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id}
+                                    AND `is_group` = 1
+                                    AND `message_type` = 2",
+                                    
+                                    
+        "selectSingle_short_voiceDsSql": "SELECT
+                                            ifnull(`statis_date` ,- 1) AS statis_date,
+                                            ifnull(`hour` ,- 1) AS HOUR,
+                                            - 1 AS channel_id,
+                                            ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                            ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                            0 AS `single_text_count`,
+                                            0 AS `single_text_size`,
+                                            0 AS `single_picture_count`,
+                                            0 AS `single_picture_size`,
+                                            0 AS `single_file_count`,
+                                            0 AS `single_file_size`,
+                                            sum(`message_count`) AS `single_short_voice_count`,
+                                            0 AS `single_short_voice_time`,
+                                            0 AS `single_short_video_count`,
+                                            0 AS `single_short_video_time`,
+                                            0 AS `single_voice_count`,
+                                            0 AS `single_voice_time`,
+                                            0 AS `single_video_count`,
+                                            0 AS `single_video_time`,
+                                            0 AS `group_text_count`,
+                                            0 AS `group_text_size`,
+                                            0 AS `group_picture_count`,
+                                            0 AS `group_picture_size`,
+                                            0 AS `group_file_count`,
+                                            0 AS `group_file_size`,
+                                            0 AS `group_short_voice_count`,
+                                            0 AS `group_short_voice_time`,
+                                            0 AS `group_short_video_count`,
+                                            0 AS `group_short_video_time`
+                                        FROM
+                                            bi_dw.dw_engine_message_log_dm_yyyymm
+                                        WHERE
+                                            1 = 1
+                                        AND `statis_date` = ${store_id}
+                                        AND `is_group` = 1
+                                        AND `message_type` = 4
+                                        ",    
+                                        
+                                        
+         "selectSingle_short_videoDsSql": "SELECT
+                                                ifnull(`statis_date` ,- 1) AS statis_date,
+                                                ifnull(`hour` ,- 1) AS HOUR,
+                                                - 1 AS channel_id,
+                                                ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                                ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                                0 AS `single_text_count`,
+                                                0 AS `single_text_size`,
+                                                0 AS `single_picture_count`,
+                                                0 AS `single_picture_size`,
+                                                0 AS `single_file_count`,
+                                                0 AS `single_file_size`,
+                                                0 AS `single_short_voice_count`,
+                                                0 AS `single_short_voice_time`,
+                                                sum(`message_count`) AS `single_short_video_count`,
+                                                0 AS `single_short_video_time`,
+                                                0 AS `single_voice_count`,
+                                                0 AS `single_voice_time`,
+                                                0 AS `single_video_count`,
+                                                0 AS `single_video_time`,
+                                                0 AS `group_text_count`,
+                                                0 AS `group_text_size`,
+                                                0 AS `group_picture_count`,
+                                                0 AS `group_picture_size`,
+                                                0 AS `group_file_count`,
+                                                0 AS `group_file_size`,
+                                                0 AS `group_short_voice_count`,
+                                                0 AS `group_short_voice_time`,
+                                                0 AS `group_short_video_count`,
+                                                0 AS `group_short_video_time`
+                                            FROM
+                                                bi_dw.dw_engine_message_log_dm_yyyymm
+                                            WHERE
+                                                1 = 1
+                                            AND `statis_date` = ${store_id}
+                                            AND `is_group` = 1
+                                            AND `message_type` = 5 ", 
+                                            
+       "selectSingle_voiceDsSql": "SELECT
+                                        ifnull(`statis_date` ,- 1) AS statis_date,
+                                        ifnull(`hour` ,- 1) AS HOUR,
+                                        - 1 AS channel_id,
+                                        ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                        ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                        0 AS `single_text_count`,
+                                        0 AS `single_text_size`,
+                                        0 AS `single_picture_count`,
+                                        0 AS `single_picture_size`,
+                                        0 AS `single_file_count`,
+                                        0 AS `single_file_size`,
+                                        0 AS `single_short_voice_count`,
+                                        0 AS `single_short_voice_time`,
+                                        0 AS `single_short_video_count`,
+                                        0 AS `single_short_video_time`,
+                                        sum(`call_count`) AS `single_voice_count`,
+                                        sum(`duration`) AS `single_voice_time`,
+                                        0 AS `single_video_count`,
+                                        0 AS `single_video_time`,
+                                        0 AS `group_text_count`,
+                                        0 AS `group_text_size`,
+                                        0 AS `group_picture_count`,
+                                        0 AS `group_picture_size`,
+                                        0 AS `group_file_count`,
+                                        0 AS `group_file_size`,
+                                        0 AS `group_short_voice_count`,
+                                        0 AS `group_short_voice_time`,
+                                        0 AS `group_short_video_count`,
+                                        0 AS `group_short_video_time`
+                                    FROM
+                                        bi_dw.dw_engine_singlecall_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id}
+                                    AND `call_type` = 1
+                                    ",  
+                                                                   
+     "selectSingle_videoDsSql": "SELECT
+                                        ifnull(`statis_date` ,- 1) as statis_date,
+                                        ifnull(`hour` ,- 1) as hour,
+                                        -1 as channel_id,
+                                        ifnull(`app_plat_id` ,- 1) as app_plat_id,
+                                        ifnull(`app_version_id` ,- 1) as app_version_id,
+                                        0 as `single_text_count`,
+                                        0 as `single_text_size`,
+                                        0 as `single_picture_count`,
+                                        0 as `single_picture_size`,
+                                        0 as `single_file_count`,
+                                        0 as `single_file_size`,
+                                        0 as `single_short_voice_count`,
+                                        0 as `single_short_voice_time`,
+                                        0 as `single_short_video_count`,
+                                        0 as `single_short_video_time`,
+                                        0 as `single_voice_count`,
+                                        0 as `single_voice_time`,
+                                        sum(`call_count`) as `single_video_count`,
+                                        sum(`duration`) as `single_video_time`,
+                                        0 as `group_text_count`,
+                                        0 as `group_text_size`,
+                                        0 as `group_picture_count`,
+                                        0 as `group_picture_size`,
+                                        0 as `group_file_count`,
+                                        0 as `group_file_size`,
+                                        0 as `group_short_voice_count`,
+                                        0 as `group_short_voice_time`,
+                                        0 as `group_short_video_count`,
+                                        0 as `group_short_video_time`
+                                    FROM
+                                        bi_dw.dw_engine_singlecall_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id}
+                                    AND `call_type` = 2
+                                    ", 
+        "selectGroup_textDsSql": "SELECT
+                                        ifnull(`statis_date` ,- 1) AS statis_date,
+                                        ifnull(`hour` ,- 1) AS HOUR,
+                                        - 1 AS channel_id,
+                                        ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                        ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                        0 AS `single_text_count`,
+                                        0 AS `single_text_size`,
+                                        0 AS `single_picture_count`,
+                                        0 AS `single_picture_size`,
+                                        0 AS `single_file_count`,
+                                        0 AS `single_file_size`,
+                                        0 AS `single_short_voice_count`,
+                                        0 AS `single_short_voice_time`,
+                                        0 AS `single_short_video_count`,
+                                        0 AS `single_short_video_time`,
+                                        0 AS `single_voice_count`,
+                                        0 AS `single_voice_time`,
+                                        0 AS `single_video_count`,
+                                        0 AS `single_video_time`,
+                                        sum(`message_count`) as `group_text_count`,
+                                        sum(`content_size`) as `group_text_size`,
+                                        0 AS `group_picture_count`,
+                                        0 AS `group_picture_size`,
+                                        0 AS `group_file_count`,
+                                        0 AS `group_file_size`,
+                                        0 AS `group_short_voice_count`,
+                                        0 AS `group_short_voice_time`,
+                                        0 AS `group_short_video_count`,
+                                        0 AS `group_short_video_time`
+                                    FROM
+                                        bi_dw.dw_engine_message_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id}
+                                    AND `is_group` = 2
+                                    AND (
+                                        `message_type` = 1
+                                        OR `message_type` = 6
+                                        OR `message_type` = 7
+                                        OR `message_type` = 8
+                                    )
+                                    ",                            
+                                    
+      "selectGroup_pictureDsSql": "SELECT
+                                            ifnull(`statis_date` ,- 1) AS statis_date,
+                                            ifnull(`hour` ,- 1) AS HOUR,
+                                            - 1 AS channel_id,
+                                            ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                            ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                            0 AS `single_text_count`,
+                                            0 AS `single_text_size`,
+                                            0 AS `single_picture_count`,
+                                            0 AS `single_picture_size`,
+                                            0 AS `single_file_count`,
+                                            0 AS `single_file_size`,
+                                            0 AS `single_short_voice_count`,
+                                            0 AS `single_short_voice_time`,
+                                            0 AS `single_short_video_count`,
+                                            0 AS `single_short_video_time`,
+                                            0 AS `single_voice_count`,
+                                            0 AS `single_voice_time`,
+                                            0 AS `single_video_count`,
+                                            0 AS `single_video_time`,
+                                            0 AS `group_text_count`,
+                                            0 AS `group_text_size`,
+                                            sum(`message_count`) as `group_picture_count`,
+                                            sum(`content_size`) as `group_picture_size`,
+                                            0 AS `group_file_count`,
+                                            0 AS `group_file_size`,
+                                            0 AS `group_short_voice_count`,
+                                            0 AS `group_short_voice_time`,
+                                            0 AS `group_short_video_count`,
+                                            0 AS `group_short_video_time`
+                                        FROM
+                                            bi_dw.dw_engine_message_log_dm_yyyymm
+                                        WHERE
+                                            1 = 1
+                                        AND `statis_date` = ${store_id}
+                                        AND `is_group` = 2
+                                        AND `message_type` = 3
+                                        ", 
+       "selectGroup_fileDsSql": "SELECT
+                                        ifnull(`statis_date` ,- 1) AS statis_date,
+                                        ifnull(`hour` ,- 1) AS HOUR,
+                                        - 1 AS channel_id,
+                                        ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                        ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                        0 AS `single_text_count`,
+                                        0 AS `single_text_size`,
+                                        0 AS `single_picture_count`,
+                                        0 AS `single_picture_size`,
+                                        0 AS `single_file_count`,
+                                        0 AS `single_file_size`,
+                                        0 AS `single_short_voice_count`,
+                                        0 AS `single_short_voice_time`,
+                                        0 AS `single_short_video_count`,
+                                        0 AS `single_short_video_time`,
+                                        0 AS `single_voice_count`,
+                                        0 AS `single_voice_time`,
+                                        0 AS `single_video_count`,
+                                        0 AS `single_video_time`,
+                                        0 AS `group_text_count`,
+                                        0 AS `group_text_size`,
+                                        0 AS `group_picture_count`,
+                                        0 AS `group_picture_size`,
+                                        sum(`message_count`) as `group_file_count`,
+                                        sum(`content_size`) as `group_file_size`,
+                                        0 AS `group_short_voice_count`,
+                                        0 AS `group_short_voice_time`,
+                                        0 AS `group_short_video_count`,
+                                        0 AS `group_short_video_time`
+                                    FROM
+                                        bi_dw.dw_engine_message_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id}
+                                    AND `is_group` = 2
+                                    AND `message_type` = 2
+                                    ",
+                                    
+        "selectGroup_short_voiceDsSql": "SELECT
+                                            ifnull(`statis_date` ,- 1) AS statis_date,
+                                            ifnull(`hour` ,- 1) AS HOUR,
+                                            - 1 AS channel_id,
+                                            ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                            ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                            0 AS `single_text_count`,
+                                            0 AS `single_text_size`,
+                                            0 AS `single_picture_count`,
+                                            0 AS `single_picture_size`,
+                                            0 AS `single_file_count`,
+                                            0 AS `single_file_size`,
+                                            0 AS `single_short_voice_count`,
+                                            0 AS `single_short_voice_time`,
+                                            0 AS `single_short_video_count`,
+                                            0 AS `single_short_video_time`,
+                                            0 AS `single_voice_count`,
+                                            0 AS `single_voice_time`,
+                                            0 AS `single_video_count`,
+                                            0 AS `single_video_time`,
+                                            0 AS `group_text_count`,
+                                            0 AS `group_text_size`,
+                                            0 AS `group_picture_count`,
+                                            0 AS `group_picture_size`,
+                                            0 AS `group_file_count`,
+                                            0 AS `group_file_size`,
+                                            sum(`message_count`) AS `group_short_voice_count`,
+                                            0 AS `group_short_voice_time`,
+                                            0 AS `group_short_video_count`,
+                                            0 AS `group_short_video_time`
+                                        FROM
+                                            bi_dw.dw_engine_message_log_dm_yyyymm
+                                        WHERE
+                                            1 = 1
+                                        AND `statis_date` = ${store_id}
+                                        AND `is_group` = 2
+                                        AND `message_type` = 4
+                                    ",  
+       "selectGroup_short_videoDsSql": "SELECT
+                                            ifnull(`statis_date` ,- 1) AS statis_date,
+                                            ifnull(`hour` ,- 1) AS HOUR,
+                                            - 1 AS channel_id,
+                                            ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                            ifnull(`app_version_id` ,- 1) AS app_version_id,
+                                            0 AS `single_text_count`,
+                                            0 AS `single_text_size`,
+                                            0 AS `single_picture_count`,
+                                            0 AS `single_picture_size`,
+                                            0 AS `single_file_count`,
+                                            0 AS `single_file_size`,
+                                            0 AS `single_short_voice_count`,
+                                            0 AS `single_short_voice_time`,
+                                            0 AS `single_short_video_count`,
+                                            0 AS `single_short_video_time`,
+                                            0 AS `single_voice_count`,
+                                            0 AS `single_voice_time`,
+                                            0 AS `single_video_count`,
+                                            0 AS `single_video_time`,
+                                            0 AS `group_text_count`,
+                                            0 AS `group_text_size`,
+                                            0 AS `group_picture_count`,
+                                            0 AS `group_picture_size`,
+                                            0 AS `group_file_count`,
+                                            0 AS `group_file_size`,
+                                            0 AS `group_short_voice_count`,
+                                            0 AS `group_short_voice_time`,
+                                            sum(`message_count`) AS `group_short_video_count`,
+                                            0 AS `group_short_video_time`
+                                        FROM
+                                            bi_dw.dw_engine_message_log_dm_yyyymm
+                                        WHERE
+                                            1 = 1
+                                        AND `statis_date` = ${store_id}
+                                        AND `is_group` = 2
+                                        AND `message_type` = 5
+                                    ",  
+                                    
+     "insertDmSelectSql": "INSERT INTO bi_st.st_function_statistic_dm_yyyymm (
+                                        `statis_date`,
+                                        `hour`,
+                                        `channel_id`,
+                                        `app_plat_id`,
+                                        `app_version_id`,
+                                        `single_text_count`,
+                                        `single_text_size`,
+                                        `single_picture_count`,
+                                        `single_picture_size`,
+                                        `single_file_count`,
+                                        `single_file_size`,
+                                        `single_short_voice_count`,
+                                        `single_short_voice_time`,
+                                        `single_short_video_count`,
+                                        `single_short_video_time`,
+                                        `single_voice_count`,
+                                        `single_voice_time`,
+                                        `single_video_count`,
+                                        `single_video_time`,
+                                        `group_text_count`,
+                                        `group_text_size`,
+                                        `group_picture_count`,
+                                        `group_picture_size`,
+                                        `group_file_count`,
+                                        `group_file_size`,
+                                        `group_short_voice_count`,
+                                        `group_short_voice_time`,
+                                        `group_short_video_count`,
+                                        `group_short_video_time`
+                                    ) SELECT
+                                        `statis_date`,
+                                        `hour`,
+                                        `channel_id` ,
+                                        `app_plat_id`,
+                                        `app_version_id`,
+                                        sum(`single_text_count`) as single_text_count,
+                                        sum(`single_text_size`) as single_text_size,
+                                        sum(`single_picture_count`) as single_picture_count,
+                                        sum(`single_picture_size`) as single_picture_size,
+                                        sum(`single_file_count`) as single_file_count,
+                                        sum(`single_file_size`) as single_file_size,
+                                        sum(`single_short_voice_count`) as single_short_voice_count,
+                                        sum(`single_short_voice_time`) as single_short_voice_time,
+                                        sum(`single_short_video_count`) as single_short_video_count,
+                                        sum(`single_short_video_time`) as single_short_video_time,
+                                        sum(`single_voice_count`) as single_voice_count,
+                                        sum(`single_voice_time`) as single_voice_time,
+                                        sum(`single_video_count`) as single_video_count,
+                                        sum(`single_video_time`) as single_video_time,
+                                        sum(`group_text_count`) as group_text_count,
+                                        sum(`group_text_size`) as group_text_size,
+                                        sum(`group_picture_count`) as group_picture_count,
+                                        sum(`group_picture_size`) as group_picture_size,
+                                        sum(`group_file_count`) as group_file_count,
+                                        sum(`group_file_size`) as group_file_size,
+                                        sum(`group_short_voice_count`) as group_short_voice_count,
+                                        sum(`group_short_voice_time`) as group_short_voice_time,
+                                        sum(`group_short_video_count`) as group_short_video_count,
+                                        sum(`group_short_video_time`) as group_short_video_time
+                                    FROM
+                                        bi_tmp.tmp_st_function_statistic_yyyymmdd
+                                    WHERE
+                                        1 = 1
+                                    AND `statis_date` = ${store_id} 
+                                    GROUP BY
+                                        `statis_date`,
+                                        `hour`,
+                                        `channel_id`,
+                                        `app_plat_id`,
+                                        `app_version_id`"                                                                                                                                                                
+
+}

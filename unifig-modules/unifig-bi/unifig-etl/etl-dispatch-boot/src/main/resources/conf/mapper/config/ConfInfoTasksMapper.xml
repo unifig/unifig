@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="etl.dispatch.boot.dao.ConfInfoTasksMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="etl.dispatch.boot.entity.ConfInfoTasks">
+		<id column="pk_id" property="pkId" />
+		<result column="tasks_name" property="tasksName" />
+		<result column="remark" property="remark" />
+		<result column="script_type" property="scriptType" />
+		<result column="script_id" property="scriptId" />
+		<result column="take_eval" property="takeEval" />
+		<result column="alarm_notice" property="alarmNotice" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+
+	<select id="selectUnselected" resultType="etl.dispatch.boot.entity.ConfInfoTasks">
+	SELECT
+	pk_id AS pkId,
+	tasks_name AS tasksName,
+	remark AS remark,
+	script_type AS scriptType,
+	script_id AS scriptId,
+	take_eval AS takeEval,
+	alarm_notice AS alarmNotice,
+	`status`,
+	create_user AS createUser,
+	create_time AS createTime,
+	update_user AS updateUser,
+	update_time AS updateTime
+FROM
+	conf_info_tasks
+WHERE
+`status`=1 and 
+	pk_id NOT IN (
+		SELECT
+			tasks_id
+		FROM
+			conf_rely_tasks
+			where `status`=1 
+	)
+	</select>
+	
+	<select id = "page" resultType = "java.util.Map">
+	   SELECT
+		    t.pk_id AS pkId,
+		    t.tasks_name AS tasksName,
+		    t.remark,
+		    t.script_type AS scriptType,
+		    t.script_id AS scriptId,
+		    t.take_eval AS takeEval,
+		    t.alarm_notice AS alarmNotice,
+		    t.`status`,
+		    t.create_user AS `createUser`,
+		    t.create_time AS createTime,
+		    t.update_user AS updateUser,
+		    t.update_time AS updateTime,
+		    c.script_path AS scriptPath
+		FROM
+		    conf_info_tasks t LEFT JOIN conf_info_java_script c ON t.script_id = c.pk_id 
+		WHERE
+		    (t.`status` !=-1)
+		 <if test = "tasksName!=null and tasksName!=''">
+			    AND tasks_name   LIKE concat(concat('%',#{tasksName}),'%')
+		</if>
+		 <if test = "scriptPath!=null and scriptPath!=''">
+			    AND c.script_path   LIKE concat(concat('%',#{scriptPath}),'%')
+		</if>
+	</select>
+</mapper>

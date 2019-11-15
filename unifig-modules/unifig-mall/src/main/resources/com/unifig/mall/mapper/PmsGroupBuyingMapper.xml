@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.PmsGroupBuyingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.PmsGroupBuying">
+        <id column="id" property="id" />
+        <result column="product_id" property="productId" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="valid_time" property="validTime" />
+        <result column="number" property="number" />
+        <result column="discount_rate" property="discountRate" />
+        <result column="group_purchase_price" property="groupPurchasePrice" />
+        <result column="limitation" property="limitation" />
+        <result column="overtime_clustering" property="overtimeClustering" />
+        <result column="success_group_number" property="successGroupNumber" />
+        <result column="status" property="status" />
+        <result column="creation_time" property="creationTime" />
+        <result column="sku_ids" property="skuIds" />
+        <result column="enable" property="enable"/>
+        <result column="name" property="name"/>
+        <result column="product_name" property="productName"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, product_id, product_name,`name`,start_time, end_time, valid_time, number, discount_rate, group_purchase_price, limitation, overtime_clustering, success_group_number, status, creation_time, sku_ids,enable
+    </sql>
+
+</mapper>

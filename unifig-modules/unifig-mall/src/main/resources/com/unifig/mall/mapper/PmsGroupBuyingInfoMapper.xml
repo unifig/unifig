@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.PmsGroupBuyingInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.PmsGroupBuyingInfo">
+        <id column="id" property="id" />
+        <result column="group_buying_id" property="groupBuyingId" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="group_purchase_price" property="groupPurchasePrice" />
+        <result column="status" property="status" />
+        <result column="success_number" property="successNumber" />
+        <result column="number" property="number" />
+    </resultMap>
+
+    <resultMap id="BaseResultInfoMap" type="com.unifig.mall.bean.vo.PmsGroupBuyingInfoVo">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="user_pic" property="userPic" />
+        <result column="type" property="type" />
+        <result column="create_time" property="createTime" />
+        <result column="order_id" property="orderId" />
+    </resultMap>
+
+    <resultMap id="BaseResultListMap" type="com.unifig.mall.bean.vo.PmsGroupBuyingInfoList">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="product_name" property="productName" />
+        <result column="status" property="status" />
+        <result column="success_number" property="successNumber" />
+        <result column="number" property="number" />
+        <result column="create_time" property="createTime" />
+        <result column="user_name" property="userName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, group_buying_id, start_time, end_time, group_purchase_price, status, success_number, number
+    </sql>
+    <select id="selectByList" resultMap="BaseResultListMap">
+        SELECT
+            i.id,
+            b.`name`,
+            b.product_name,
+            i.start_time,
+            i.end_time,
+            i.number,
+            i.`status`,
+            u.create_time,
+            u.user_name,
+            i.success_number
+        FROM
+            `pms_group_buying_info` i
+        LEFT JOIN pms_group_buying b ON b.id = i.group_buying_id
+        LEFT JOIN pms_group_buying_user u ON u.parent_id = i.id
+        AND u.type = 1
+        <where>
+            <if test="groupBuyingId != null and groupBuyingId.length()>0">i.group_buying_id = #{groupBuyingId}</if>
+            <if test="status != null" >and i.`status` = #{status}</if>
+        </where>
+    </select>
+    <select id="infoByPid" resultMap="BaseResultInfoMap">
+        SELECT
+         *
+        FROM
+         `pms_group_buying_user`
+        WHERE
+         parent_id = #{pid}
+    </select>
+
+</mapper>

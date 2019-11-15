@@ -1,0 +1,55 @@
+{
+
+     "create_engine_group_info_ds":"CREATE TABLE IF NOT EXISTS bi_interface.engine_group_info_yyyymmdd (
+                                          `id` int(10) NOT NULL COMMENT 'id',
+                                          `founder_id` int(10) DEFAULT NULL,
+                                          `group_name` text DEFAULT NULL COMMENT '群名称',
+                                          `face_src` varchar(255) DEFAULT NULL COMMENT '图片',
+                                          `large_face_src` varchar(255) DEFAULT NULL COMMENT '大图',
+                                          `small_face_src` varchar(255) DEFAULT NULL COMMENT '小图',
+                                          `qr_src` varchar(255) DEFAULT NULL,
+                                          `cube` varchar(128) DEFAULT NULL COMMENT 'cube群id',
+                                          `master_id` int(10) DEFAULT NULL COMMENT '创建者id',
+                                          `managers` text COMMENT '管理员',
+                                          `members` longtext COMMENT '成员',
+                                          `notice` text COMMENT '通知',
+                                          `confirmation` int(10) DEFAULT NULL,
+                                          `update_face_state` int(2) DEFAULT NULL,
+                                          `create_time` bigint(20) DEFAULT NULL COMMENT '创建时间',
+                                          `update_time` bigint(20) DEFAULT NULL COMMENT '修改时间',
+                                          `year` int(10) DEFAULT NULL,
+                                          `month` int(10) DEFAULT NULL,
+                                          `day` int(10) DEFAULT NULL,
+                                          `hour` int(10) DEFAULT NULL,
+                                          `store_id` int(10) DEFAULT NULL
+                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                                        
+      "insert_engine_group_info_log":"INSERT INTO bi_interface.engine_group_info_yyyymmdd (
+                                    `id`,
+                                    `founder_id`,
+                                    `confirmation`,
+                                    `group_name`,
+                                    `face_src`,
+                                    `large_face_src`,
+                                    `small_face_src`,
+                                    `qr_src`,
+                                    `cube`,
+                                    `master_id`,
+                                    `managers`,
+                                    `members`,
+                                    `notice`,
+                                    `update_face_state`,
+                                    `create_time`,
+                                    `update_time`,
+                                    `year`,
+                                    `month`,
+                                    `day`,
+                                    `hour`,
+                                    `store_id` 
+                                    )VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )",
+                                        
+     "delete_yes_date":"delete from bi_interface.engine_group_info_yyyymmdd",   
+                
+     "delete_table":"drop TABLE IF EXISTS bi_interface.engine_group_info_yyyymmdd ;"
+
+}

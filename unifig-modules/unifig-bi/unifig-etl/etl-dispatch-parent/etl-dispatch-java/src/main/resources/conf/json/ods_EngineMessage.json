@@ -1,0 +1,55 @@
+{
+    "selectMessageLogLimit": "SELECT
+                                    e.`master`,
+                                    e.`direct`,
+                                    e.`sn`,
+                                    e.`timestamp`,
+                                    e.`content_bytes`,
+                                    e.`entity_bytes`,
+                                    e.`action`,
+                                    e.`network_type`,
+                                    e.`app_device_type` AS app_plat_id,
+                                    e.`app_version` AS app_version_id,
+                                    e.`is_group`,
+                                    e.`from`,
+                                    e.`to`,
+                                    e.`type`,
+                                    e.`year`,
+                                    e.`month`,
+                                    e.`day`,
+                                    e.`hour`,
+                                    e.`store_id`
+                                FROM
+                                    bi_interface.engine_message_log_yyyymmdd e
+                                limit ${offset},${rows}",
+                                
+         "create_ods_messageLog": "CREATE TABLE IF NOT EXISTS bi_ods.ods_engine_message_log_dm_yyyymm (
+                                          `master` varchar(32) NOT NULL COMMENT '发送者',
+                                          `direct` int(2) DEFAULT '0' COMMENT '流量上下行, 1-上行（服务器->终端），2-下行（服务器<-终端）',
+                                          `timestamp` bigint(13) DEFAULT '0' COMMENT '发送时间,',
+                                          `sn` bigint(20) DEFAULT '0',
+                                          `content_bytes` bigint(13) DEFAULT '0' COMMENT '内容大小,',
+                                          `entity_bytes` bigint(13) DEFAULT '0' COMMENT '消息实体大小, ',
+                                          `action` varchar(255) DEFAULT NULL COMMENT '流量产生动作 ',
+                                          `network_type` int(10) DEFAULT '-9' COMMENT '流量类型(3G,4G,Wifi),   ',
+                                          `app_device_type` int(10) DEFAULT '-9' COMMENT '终端设备分类（pc、web、android、ios、macos、windows)',
+                                          `app_id` int(10) DEFAULT '-9' COMMENT 'app_id',
+                                          `app_version` int(10) DEFAULT '-9' COMMENT '坐标版本号',
+                                          `is_group` int(4) DEFAULT '0' COMMENT '是否是群消息:1、不群消息，2、是群消息',
+                                          `from` bigint(13) DEFAULT NULL COMMENT '发送者',
+                                          `to` varchar(13) DEFAULT NULL COMMENT '接收者cube号',
+                                          `type` int(3) DEFAULT '-9' COMMENT '内容类型:1:Text:文本，2:File：文件，3:Image：图片，4:VoiceClip：短语音，5:VideoClip：短视频，6:Card：卡片消息，7:History：历史消息，8:Rich：富文本消息',
+                                          `year` int(10) DEFAULT NULL COMMENT '年',
+                                          `month` int(10) DEFAULT NULL COMMENT '月',
+                                          `day` int(10) DEFAULT NULL COMMENT '日',
+                                          `hour` int(10) DEFAULT NULL COMMENT '时',
+                                          `store_id` int(10) DEFAULT NULL COMMENT '分区',
+                                          INDEX `idx_ods_message_log_yyyymmdd_date` (`year`, `month`, `day`),
+                                          INDEX `idx_ods_message_log_yyyymmdd_range` (`store_id`)
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                                    
+         "delete_yes_date":"delete from bi_ods.ods_engine_message_log_dm_yyyymm where 1=1 AND store_id = ${statisDate} ",
+         "delete_table":"drop TABLE IF EXISTS bi_ods.ods_engine_message_log_dm_yyyymm ;",
+         "delete_date":"delete from bi_ods.ods_engine_message_log_dm_yyyymm where 1=1 AND store_id < ${statisDate} "
+
+}

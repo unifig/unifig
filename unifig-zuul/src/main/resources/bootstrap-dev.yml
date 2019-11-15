@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: ratel-zuul
+  cloud:
+    config:
+      uri: http://127.0.0.1:10010
+      profile: dev
+      label: master

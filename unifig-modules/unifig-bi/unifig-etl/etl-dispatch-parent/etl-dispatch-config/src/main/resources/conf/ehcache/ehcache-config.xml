@@ -1,0 +1,27 @@
+<ehcache>
+	<!-- Etl配置缓存配置区域 -->
+	<cache name="etl.dispatch.config.confInfoGroup" maxElementsInMemory="10000"
+		eternal="true" maxElementsOnDisk="1000" overflowToDisk="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" />
+	<cache name="etl.dispatch.config.confInfoJavaScript" maxElementsInMemory="10000"
+		eternal="true" maxElementsOnDisk="1000" overflowToDisk="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" />
+	<cache name="etl.dispatch.config.confInfoPythonScript" maxElementsInMemory="10000"
+		eternal="true" maxElementsOnDisk="1000" overflowToDisk="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" />
+	<cache name="etl.dispatch.config.confInfoTasks" maxElementsInMemory="10000"
+		eternal="true" maxElementsOnDisk="1000" overflowToDisk="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" />
+	<cache name="etl.dispatch.config.confRelyTasks" maxElementsInMemory="10000"
+		eternal="true" maxElementsOnDisk="1000" overflowToDisk="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" />
+	<cache name="etl.dispatch.config.confRelyGroup" maxElementsInMemory="10000"
+		eternal="true" maxElementsOnDisk="1000" overflowToDisk="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LFU" />
+</ehcache>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.LmsOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.LmsOrder">
+        <id column="id" property="id" />
+        <result column="supplier_id" property="supplierId" />
+        <result column="supplier_name" property="supplierName" />
+        <result column="supplier_address_id" property="supplierAddressId" />
+        <result column="consignee_address_id" property="consigneeAddressId" />
+        <result column="consignee_address_name" property="consigneeAddressName" />
+        <result column="logistics_sn" property="logisticsSn" />
+        <result column="mall_sn" property="mallSn" />
+        <result column="shipper_logistic_sn" property="shipperLogisticSn" />
+        <result column="shipper_code" property="shipperCode" />
+        <result column="shipper_name" property="shipperName" />
+        <result column="upload_time" property="uploadTime" />
+        <result column="EBusinessID" property="EBusinessID" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="edit_time" property="editTime" />
+        <result column="ratel_no" property="ratelNo" />
+        <result column="enable" property="enable" />
+        <result column="shipper_print_template" property="shipperPrintTemplate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, supplier_id, supplier_name, supplier_address_id, consignee_address_id, consignee_address_name, logistics_sn, mall_sn, shipper_logistic_sn, shipper_code, shipper_name, upload_time, EBusinessID, status, create_time, edit_time, ratel_no, enable, shipper_print_template
+    </sql>
+
+</mapper>

@@ -1,0 +1,8 @@
+<ehcache>
+	<diskStore path="java.io.tmpdir" />
+	<!-- 定义默认的缓存区，如果在未指定缓存区时，默认使用该缓存区 -->
+	<defaultCache maxElementsInMemory="10000" eternal="true"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="true"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU" />
+</ehcache>

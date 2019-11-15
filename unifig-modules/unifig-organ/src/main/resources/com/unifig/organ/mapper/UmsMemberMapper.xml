@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.organ.mapper.UmsMemberMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.model.UmsMember">
+        <id column="id" property="id" />
+        <result column="recommender_id" property="recommenderId" />
+        <result column="username" property="username" />
+        <result column="nickname" property="nickname" />
+        <result column="password" property="password" />
+        <result column="mobile" property="mobile" />
+        <result column="avatar" property="avatar" />
+        <result column="gender" property="gender" />
+        <result column="birthday" property="birthday" />
+        <result column="city" property="city" />
+        <result column="source_type" property="sourceType" />
+        <result column="integration" property="integration" />
+        <result column="lock_integration" property="lockIntegration" />
+        <result column="openid" property="openid" />
+        <result column="status" property="status" />
+        <result column="register_time" property="registerTime" />
+        <result column="proxy" property="proxy" />
+        <result column="invit_code" property="invitCode" />
+        <result column="create_time" property="createTime" />
+        <result column="edit_time" property="editTime" />
+        <result column="terrace_id" property="terraceId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, recommender_id, username, nickname, password, mobile, avatar, gender, birthday, city, source_type, integration, lock_integration, openid, status, register_time, proxy, invit_code, create_time, edit_time, terrace_id
+    </sql>
+
+</mapper>

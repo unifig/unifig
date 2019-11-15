@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.CmsArticleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.CmsArticle">
+		<id column="id" property="id" />
+		<result column="cat_id" property="catId" />
+		<result column="cat_name" property="catName" />
+		<result column="product_id" property="productId" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="author" property="author" />
+		<result column="author_email" property="authorEmail" />
+		<result column="keywords" property="keywords" />
+		<result column="article_type" property="articleType" />
+		<result column="is_open" property="isOpen" />
+		<result column="add_time" property="addTime" />
+		<result column="file_url" property="fileUrl" />
+		<result column="open_type" property="openType" />
+		<result column="link" property="link" />
+		<result column="share" property="share" />
+		<result column="share_integral" property="shareIntegral" />
+		<result column="description" property="description" />
+		<result column="click" property="click" />
+		<result column="click_integral" property="clickIntegral" />
+		<result column="like" property="like" />
+		<result column="like_integral" property="likeIntegral" />
+		<result column="publish_time" property="publishTime" />
+		<result column="thumb" property="thumb" />
+		<result column="money" property="money" />
+		<result column="c_money" property="cMoney" />
+		<result column="create_time" property="createTime" />
+		<result column="edit_time" property="editTime" />
+		<result column="ratel_no" property="ratelNo" />
+		<result column="enable" property="enable" />
+	</resultMap>
+
+	<!-- 可根据自己的需求，是否要使用 CmsArticleHomeVo -->
+	<resultMap type="com.unifig.mall.bean.vo.HomeCmsArticleVo" id="aticleHomeVo">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="description" property="description" />
+		<result column="share" property="share" />
+		<result column="click" property="click" />
+		<result column="like" property="like" />
+		<result column="thumb" property="thumb" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, cat_id AS catId,cat_name AS catName, title, content, author, author_email AS authorEmail, keywords, article_type AS articleType, is_open AS isOpen, add_time AS addTime, file_url AS fileUrl, open_type AS openType, link, description, click,'like',share, publish_time AS publishTime, thumb, money, c_money AS cMoney, create_time AS createTime, edit_time AS editTime,like_integral AS likeIntegral, enable,ratel_no AS ratelNo
+    </sql>
+
+	<select id="selectHomeList" resultMap="aticleHomeVo">
+		select cmsa.* from cms_article cmsa
+		WHERE enable = 1 and nav_status = 1
+		ORDER BY create_time DESC
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+</mapper>

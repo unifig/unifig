@@ -1,0 +1,51 @@
+{
+    "create_login_info_ds_log":"CREATE TABLE IF NOT EXISTS bi_interface_spap.spap_login_log_yyyymmdd (
+                                        `user_id` BIGINT ( 13 ) NOT NULL DEFAULT '0' COMMENT '用户id',
+                                        `timestamp` BIGINT ( 13 ) DEFAULT '0' COMMENT '发送时间',
+                                        `app_version` VARCHAR ( 32 ) DEFAULT NULL COMMENT '版本',
+                                        `device_vendor` VARCHAR ( 32 ) DEFAULT NULL COMMENT '终端设备厂商',
+                                        `channel` INT ( 10 ) DEFAULT NULL COMMENT 'spap渠道  0-官方渠道',
+                                        `device_Id` VARCHAR ( 60 ) DEFAULT NULL COMMENT '设备ID版本',
+                                        `type` VARCHAR ( 20 ) DEFAULT NULL COMMENT '登录',
+                                        `os_name` VARCHAR ( 32 ) DEFAULT NULL COMMENT '操作系统名称',
+                                        `os_version` VARCHAR ( 32 ) DEFAULT NULL COMMENT '操作系统版本号',
+                                        `oper_ip` VARCHAR ( 32 ) DEFAULT NULL COMMENT '登录登出IP地址',
+                                        `device_model` VARCHAR ( 32 ) DEFAULT NULL COMMENT '操作系统型号',
+                                        `app_device_type` VARCHAR ( 32 ) DEFAULT NULL COMMENT '终端设备分类（pc、web、android、ios、macos、windows)',
+                                        `network` VARCHAR ( 32 ) DEFAULT NULL COMMENT '网络类型（2G、3G、4G、5G、WIFI）',
+                                        `year` INT ( 10 ) DEFAULT NULL COMMENT '年',
+                                        `month` INT ( 10 ) DEFAULT NULL COMMENT '月',
+                                        `day` INT ( 10 ) DEFAULT NULL COMMENT '日',
+                                        `hour` INT ( 10 ) DEFAULT NULL COMMENT '小时',
+                                        `store_id` INT ( 10 ) DEFAULT NULL COMMENT '分区' 
+                                        ) ENGINE = INNODB DEFAULT CHARSET = utf8;",                                      
+                                        
+     "insert_login_info_ds_log":"INSERT INTO bi_interface_spap.spap_login_log_yyyymmdd (
+	                                            `user_id`,
+		                                        `timestamp`,
+		                                        `app_version`,
+		                                        `device_vendor`,
+		                                        `channel`,
+		                                        `device_Id`,
+		                                        `type`,
+		                                        `os_name`,
+		                                        `os_version`,
+		                                        `oper_ip`,
+		                                        `device_model`,
+		                                        `app_device_type`,
+		                                        `network`,
+		                                        `year`,
+		                                        `month`,
+		                                        `day`,
+		                                        `hour`,
+		                                        `store_id`
+	                                            )
+                                            VALUES
+                                                ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )",
+                                             
+     "delete_yes_date":"delete from bi_interface_spap.spap_login_log_yyyymmdd where store_id = ${statisDate}",   
+                
+     "delete_table":"drop TABLE IF EXISTS bi_interface_spap.spap_login_log_yyyymmdd ;"
+
+
+}

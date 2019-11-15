@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.mall.mapper.LmsShipperMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.mall.bean.model.LmsShipper">
+        <id column="id" property="id" />
+        <result column="shipper_code" property="shipperCode" />
+        <result column="shipper_name" property="shipperName" />
+        <result column="create_time" property="createTime" />
+        <result column="upload_time" property="uploadTime" />
+        <result column="edit_time" property="editTime" />
+        <result column="ratel_no" property="ratelNo" />
+        <result column="enable" property="enable" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, shipper_code, shipper_name, create_time, upload_time, edit_time, ratel_no, enable
+    </sql>
+
+</mapper>

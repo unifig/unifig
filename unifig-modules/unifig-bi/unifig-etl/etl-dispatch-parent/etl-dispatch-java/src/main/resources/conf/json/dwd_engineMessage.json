@@ -1,0 +1,223 @@
+{
+    "templateDmTableSql": "CREATE TABLE IF NOT EXISTS bi_dwd.dwd_engine_message_log_dm_yyyymm (
+                                    `master` varchar(32) NOT NULL COMMENT '发送者',
+                                    `display_name` varchar(255) NOT NULL COMMENT '昵称',
+                                    `email` varchar(64) DEFAULT NULL COMMENT '邮箱',
+                                    `mobile` varchar(32) DEFAULT NULL COMMENT '联系电话',
+                                    `direct` int(2) DEFAULT '0' COMMENT '流量上下行, 1-上行（服务器->终端），2-下行（服务器<-终端）',
+                                    `timestamp` bigint(13) DEFAULT '0' COMMENT '发送时间,',
+                                    `sn` bigint(20) DEFAULT '0',
+                                    `content_bytes` bigint(13) DEFAULT '0' COMMENT '内容大小,',
+                                    `entity_bytes` bigint(13) DEFAULT '0' COMMENT '消息实体大小, ',
+                                    `action` varchar(255) DEFAULT NULL COMMENT '流量产生动作 ',
+                                    `network_type` int(10) DEFAULT '-9' COMMENT '流量类型(3G,4G,Wifi),   ',
+                                    `app_device_type` int(10) DEFAULT '-9' COMMENT '坐标登录处自取,',
+                                    `app_id` int(10) DEFAULT '-9' COMMENT 'app_id',
+                                    `app_version` int(10) DEFAULT '-9' COMMENT '坐标版本号（自取）',
+                                    `is_group` int(4) DEFAULT '0' COMMENT '是否是群消息:1、不群消息，2、是群消息',
+                                    `from` bigint(13) DEFAULT NULL COMMENT '发送者',
+                                    `to` varchar(13) DEFAULT NULL COMMENT '接收者cube号',
+                                    `to_display_name` varchar(255) NOT NULL COMMENT '接收者昵称',
+                                    `to_email` varchar(64) DEFAULT NULL COMMENT '接收者邮箱',
+                                    `to_mobile` varchar(32) DEFAULT NULL COMMENT '接收者联系电话',
+                                    `type` int(3) DEFAULT '-9' COMMENT '''内容类型:1:Text:文本，2:File：文件，3:Image：图片，4:VoiceClip：短语音，5:VideoClip：短视频，6:Card：卡片消息，7:History：历史消息，8:Rich：富文本消息',
+                                    `year` int(10) DEFAULT NULL COMMENT '年',
+                                    `month` int(10) DEFAULT NULL COMMENT '月',
+                                    `day` int(10) DEFAULT NULL COMMENT '日',
+                                    `hour` int(10) DEFAULT NULL COMMENT '时',
+                                    `store_id` int(10) DEFAULT NULL COMMENT '分区',
+                                    INDEX `idx_dwd_message_log_ds_date` (`year`, `month`, `day`),
+                                    INDEX `idx_dwd_message_log_ds_range` (`store_id`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+                                
+     "createTmpSql":"CREATE TABLE IF NOT EXISTS bi_tmp.tmp_engine_message_log_ds_yyyymmdd (
+                                          `master` varchar(32) NOT NULL COMMENT '发送者',
+                                          `direct` int(2) DEFAULT '0' COMMENT '流量上下行, 1-上行（服务器->终端），2-下行（服务器<-终端）',
+                                          `timestamp` bigint(13) DEFAULT '0' COMMENT '发送时间,',
+                                          `sn` bigint(20) DEFAULT '0',
+                                          `content_bytes` bigint(13) DEFAULT '0' COMMENT '内容大小,',
+                                          `entity_bytes` bigint(13) DEFAULT '0' COMMENT '消息实体大小, ',
+                                          `action` varchar(255) DEFAULT NULL COMMENT '流量产生动作 ',
+                                          `network_type` int(10) DEFAULT '-9' COMMENT '流量类型(3G,4G,Wifi),   ',
+                                          `app_device_type` int(10) DEFAULT '-9' COMMENT '终端设备分类（pc、web、android、ios、macos、windows)',
+                                          `app_id` int(10) DEFAULT '-9' COMMENT 'app_id',
+                                          `app_version` int(10) DEFAULT '-9' COMMENT '坐标版本号',
+                                          `is_group` int(4) DEFAULT '2' COMMENT '是否是群消息:1、群消息，2、不是群消息',
+                                          `from` bigint(13) DEFAULT NULL COMMENT '发送者',
+                                          `to` varchar(13) DEFAULT NULL COMMENT '接收者cube号',
+                                          `type` int(3) DEFAULT '-9' COMMENT '内容类型:1:Text:文本，2:File：文件，3:Image：图片，4:VoiceClip：短语音，5:VideoClip：短视频，6:Card：卡片消息，7:History：历史消息，8:Rich：富文本消息',
+                                          `year` int(10) DEFAULT NULL COMMENT '年',
+                                          `month` int(10) DEFAULT NULL COMMENT '月',
+                                          `day` int(10) DEFAULT NULL COMMENT '日',
+                                          `hour` int(10) DEFAULT NULL COMMENT '时',
+                                          `store_id` int(10) DEFAULT NULL COMMENT '分区',
+                                          INDEX `idx_ods_message_log_yyyymmdd_date` (`year`, `month`, `day`),
+                                          INDEX `idx_ods_message_log_yyyymmdd_range` (`store_id`)
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                                    
+     "insertTmpSql":"INSERT INTO bi_tmp.tmp_engine_message_log_ds_yyyymmdd (
+                            `master`,
+                            `direct`,
+                            `timestamp`,
+                            `sn`,
+                            `content_bytes`,
+                            `entity_bytes`,
+                            `action`,
+                            `network_type`,
+                            `app_device_type`,
+                            `app_id`,
+                            `app_version`,
+                            `is_group`,
+                            `from`,
+                            `to`,
+                            `type`,
+                            `year`,
+                            `month`,
+                            `day`,
+                            `hour`,
+                            `store_id` 
+                            ) SELECT
+                            `master`,
+                            `direct`,
+                            `timestamp`,
+                            `sn`,
+                            `content_bytes`,
+                            `entity_bytes`,
+                            `action`,
+                            `network_type`,
+                            `app_device_type`,
+                            `app_id`,
+                            `app_version`,
+                            `is_group`,
+                            `from`,
+                            `to`,
+                            `type`,
+                            `year`,
+                            `month`,
+                            `day`,
+                            `hour`,
+                            `store_id` 
+                            FROM
+                                bi_ods.ods_engine_message_log_dm_yyyymm 
+                            WHERE
+                                store_id = ${store_id}",
+                                
+     "insertSql":"INSERT INTO bi_dwd.dwd_engine_message_log_dm_yyyymm (
+                                    `master`,
+                                    `display_name`,
+                                    `email`,
+                                    `mobile`,
+                                    `direct`,
+                                    `timestamp`,
+                                    `sn`,
+                                    `content_bytes`,
+                                    `entity_bytes`,
+                                    `action`,
+                                    `network_type`,
+                                    `app_device_type`,
+                                    `app_id`,
+                                    `app_version`,
+                                    `is_group`,
+                                    `from`,
+                                    `to`,
+                                    `to_display_name` ,
+                                    `to_email`,
+                                    `to_mobile` ,
+                                    `type`,
+                                    `year`,
+                                    `month`,
+                                    `day`,
+                                    `hour`,
+                                    `store_id`
+                                ) ",
+                                
+                                
+     "userSelectSql": "SELECT
+                            m.`master`,
+                            IFNULL(f.`display_name`,-9) `display_name`,
+                            IFNULL(f.`email`,-9)    `email`,
+                            IFNULL(f.`mobile`,-9)   `mobile`,
+                            m.`direct`,
+                            m.`timestamp`,
+                            m.`sn`,
+                            m.`content_bytes`,
+                            m.`entity_bytes`,
+                            m.`action`,
+                            m.`network_type`,
+                            m.`app_device_type`,
+                            m.`app_id`,
+                            m.`app_version`,
+                            m.`is_group`,
+                            m.`from`,
+                            m.`to`,
+                            IFNULL(t.`display_name`,-9)  `to_display_name`,
+                            IFNULL(t.`email`,-9)    `to_email`,
+                            IFNULL(t.`mobile`,-9)   `to_mobile`,
+                            m.`type`,
+                            m.`year`,
+                            m.`month`,
+                            m.`day`,
+                            m.`hour`,
+                            m.`store_id`
+                        FROM
+                            bi_tmp.tmp_engine_message_log_ds_yyyymmdd  m
+                        LEFT JOIN bi_interface.user_info_yyyymmdd f ON CONCAT('',m.`from`)  =CONCAT('',f.`cube`)
+                        LEFT JOIN bi_interface.user_info_yyyymmdd t ON CONCAT('',m.`to`)  = CONCAT('', t.`cube`)
+                        WHERE
+                            1 = 1
+                        AND m.`store_id` = ${store_id}    
+                        ",
+                                
+        "groupSelectSql": "SELECT
+                                m.`master`,
+                                IFNULL( f.`display_name`,- 9 ) `display_name`,
+                                IFNULL( f.`email`,- 9 ) `email`,
+                                IFNULL( f.`mobile`,- 9 ) `mobile`,
+                                m.`direct`,
+                                m.`timestamp`,
+                                m.`sn`,
+                                m.`content_bytes`,
+                                m.`entity_bytes`,
+                                m.`action`,
+                                m.`network_type`,
+                                m.`app_device_type`,
+                                m.`app_id`,
+                                m.`app_version`,
+                                m.`is_group`,
+                                m.`from`,
+                                m.`to`,
+                                IFNULL( g.group_name,- 9 ) `to_display_name`,
+                                - 9  `to_email`,
+                                - 9  `to_mobile`,
+                                m.`type`,
+                                m.`year`,
+                                m.`month`,
+                                m.`day`,
+                                m.`hour`,
+                                m.`store_id` 
+                        FROM
+                                bi_tmp.tmp_engine_message_log_ds_yyyymmdd m
+                                LEFT JOIN bi_interface.user_info_yyyymmdd f ON CONCAT( '', m.`from` ) = CONCAT( '', f.`cube` )
+                                LEFT JOIN bi_interface.engine_group_info_yyyymmdd g on m.`to` = g.cube
+                        WHERE
+                                1 = 1 
+                                AND m.`store_id` = ${store_id} 
+                                AND m.`to` LIKE 'g%'   
+                                ",
+                                
+     "delete_group_date":"DELETE 
+                                FROM
+                                    bi_tmp.tmp_engine_message_log_ds_yyyymmdd 
+                                WHERE
+                                    1 = 1 
+                                    AND `store_id` = ${store_id} 
+                                    AND `to` LIKE 'g%'",  
+                                    
+     "delete_tmp_sql":"drop TABLE IF EXISTS bi_tmp.tmp_engine_message_log_ds_yyyymmdd ;",                                                       
+     "delete_yes_date":"delete from bi_dwd.dwd_engine_message_log_dm_yyyymm where 1=1 AND store_id = ${statisDate} ",
+     "delete_table":"drop TABLE IF EXISTS bi_dwd.dwd_engine_message_log_dm_yyyymm ;",
+     "delete_date":"delete from bi_dwd.dwd_engine_message_log_dm_yyyymm where 1=1 AND store_id < ${statisDate} "
+
+
+
+}

@@ -1,0 +1,42 @@
+SELECT
+   *
+FROM
+	(
+		SELECT
+			a.pk_id,
+			a.group_name,
+			b.relygroup_id
+		FROM
+			conf_info_group a
+		LEFT JOIN conf_rely_group b ON a.pk_id = b.group_id
+	) c
+LEFT JOIN (
+	SELECT
+		relygroup_id,
+		relygroup_name
+	FROM
+		(
+			SELECT
+				a.pk_id AS relygroup_id,
+				a.group_name AS relygroup_name
+			FROM
+				conf_info_group a
+			LEFT JOIN conf_rely_group b ON a.pk_id = b.relygroup_id
+		) d
+	GROUP BY
+		relygroup_id,
+		relygroup_name
+) e ON c.relygroup_id = e.relygroup_id;
+
+
+SELECT
+	a.tasks_id,
+	c.tasks_name,
+	a.relytasks_id,
+	a.group_id,
+	b.group_name
+FROM
+	conf_rely_tasks a
+LEFT JOIN conf_info_group b ON a.group_id = b.pk_id
+LEFT JOIN conf_info_tasks c ON a.tasks_id = c.pk_id;
+

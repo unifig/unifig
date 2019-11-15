@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: unifig-zipkin
+  cloud:
+    config:
+      uri: http://118.25.129.188:10010
+      profile: dev
+      label: master
+      discovery:
+              enabled: true
+              service-id: unifig-config
+      retry:
+              initial-interval: 2000
+              max-interval: 10000
+              multiplier: 2
+              max-attempts: 10
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:123456@118.25.129.188:10001/eureka/
+
+
+spring.rabbitmq.host : 118.24.151.90
+spring.rabbitmq.username : mq
+spring.rabbitmq.password : 123456

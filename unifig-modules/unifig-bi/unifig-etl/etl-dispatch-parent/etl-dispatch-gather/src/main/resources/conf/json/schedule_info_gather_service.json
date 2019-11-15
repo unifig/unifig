@@ -1,0 +1,65 @@
+{
+    "create_dm_schedule_yyyymm":"CREATE TABLE IF NOT EXISTS bi_ods.ods_schedule_dm_yyyymm (
+                                      `master_id` int(10) NOT NULL COMMENT '用户id',
+                                      `sche_id` int(10) DEFAULT NULL COMMENT '日程id',
+                                      `status` int(2) DEFAULT NULL COMMENT '状态（0未完成，1已完成）',
+                                      `action` int(2) DEFAULT NULL COMMENT '1:表示日程添加,2:delete日程删除,3:日程标注完成,4:日程分享',
+                                      `app_plat_id` int(4) DEFAULT NULL COMMENT '设备',
+                                      `app_version_id` int(4) DEFAULT NULL COMMENT '版本',
+                                      `app_id` int(4) DEFAULT NULL COMMENT '应用id',
+                                      `create_timestamp` bigint(20) DEFAULT NULL COMMENT '创建时间',
+                                      `start_timestamp` bigint(20) DEFAULT NULL COMMENT '开始时间',
+                                      `update_timestamp` bigint(20) DEFAULT NULL COMMENT '修改时间',
+                                      `end_timestamp` bigint(20) DEFAULT NULL COMMENT '结束时间',
+                                      `year` int(4) DEFAULT NULL,
+                                      `month` int(4) DEFAULT NULL,
+                                      `day` int(4) DEFAULT NULL,
+                                      `hour` int(4) DEFAULT NULL,
+                                      `statis_date` int(10) DEFAULT NULL,
+                                      KEY `idx_schedule_yyyymm` (`statis_date`,`master_id`) USING BTREE
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+    "selectSource":"SELECT
+                        `master`,
+                        `action`,
+                        `timestamp`,
+                        `app_device_type` as app_plat_id,
+                        `app_version`as app_version_id,
+                        `sche_id`,
+                        `master_id`,
+                        `status`,
+                        `start_timestamp`,
+                        `end_timestamp`,
+                        `create_timestamp` 
+                    FROM
+                        zuobiao_log.schedule_log_yyyy_mm 
+                    WHERE
+                        TIMESTAMP > ${startTime} AND TIMESTAMP < ${endTime} 
+                        LIMIT ${offset},
+                        ${rows}",
+                        
+    "insert_bi_online_schedule":"INSERT INTO bi_ods.ods_schedule_dm_yyyymm (
+                                    `master_id`,
+                                    `sche_id`,
+                                    `status`,
+                                    `action`,
+                                    `app_plat_id` ,
+                                    `app_version_id`,
+                                    `app_id`,
+                                    `create_timestamp`,
+                                    `start_timestamp`,
+                                    `update_timestamp`,
+                                    `end_timestamp`,
+                                    `year`,
+                                    `month`,
+                                    `day`,
+                                    `hour`,
+                                    `statis_date` 
+                                    )VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
+                                    
+                                    
+     "delete_yes_date":"delete from bi_ods.ods_schedule_dm_yyyymm where statis_date = ${statisDate}",   
+                
+     "delete_table":"drop TABLE IF EXISTS bi_ods.ods_schedule_dm_yyyymm ;",
+     
+     "delete_date":"delete from bi_ods.ods_schedule_dm_yyyymm where 1=1 AND statis_date < ${statisDate} "
+}

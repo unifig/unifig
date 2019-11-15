@@ -1,0 +1,48 @@
+{
+    "create_dm_login_yyyymm":"CREATE TABLE IF NOT EXISTS bi_online.login_log_all_store (
+                              `type` varchar(64) NOT NULL,
+                              `cube_id` int(4) DEFAULT NULL,
+                              `plat_id` int(4) DEFAULT NULL,
+                              `timestamp` bigint(20) DEFAULT NULL,
+                              `hashid` bigint(20) NOT NULL,
+                              INDEX `idx_login_log_all_store` (`hashid`)
+                            ) ENGINE=InnoDB AUTO_INCREMENT=1777 DEFAULT CHARSET=utf8;",
+    
+    "create_dm_logout_yyyymm":"CREATE TABLE IF NOT EXISTS bi_online.logout_log_all_store (
+                              `type` varchar(64) NOT NULL,
+                              `cube_id` int(4) DEFAULT NULL,
+                              `plat_id` int(4) DEFAULT NULL,
+                              `timestamp` bigint(20) DEFAULT NULL,
+                              `hashid` bigint(20) NOT NULL,
+                              INDEX `idx_logout_log_all_store` (`hashid`)
+                            ) ENGINE=InnoDB AUTO_INCREMENT=1777 DEFAULT CHARSET=utf8;",
+
+    "selectSource":" SELECT
+                            `type`,
+                            `device`,
+                            `timestamp`,
+                            `login_primary_key`,
+                            `user`,
+                            `ip`
+                        FROM
+                            engine_log.loginout_log_yyyy_mm 
+                        WHERE
+                            TIMESTAMP > ${timestamp} ",
+     "create_all_log_yyyymm":"CREATE TABLE IF NOT EXISTS bi_online.all_time_log_yyyymm (
+                               `primary_key` varchar(512) DEFAULT NULL,
+                               `timestamp` bigint(20) DEFAULT NULL,
+							   `type` varchar(64) NOT NULL,
+							   `cube_id` int(4) DEFAULT NULL,
+							   `plat_id` int(4) DEFAULT NULL,
+							   `ip` varchar(64) DEFAULT NULL,
+							   `isp_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 固网运营商字典维表dim_isp字典匹配自增获取',
+							   `country_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 国家字典表维表dim_country字典匹配自增获取',
+							   `region_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 省/地区维表dim_region字典匹配自增获取',
+							   `city_id` int(10) DEFAULT NULL COMMENT 'oper_ip IP地址庫 地市维表dim_city字典匹配自增获取',
+							   KEY `idx_all_time_log_yyyymm` (`cube_id`) USING BTREE
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+            
+    "insertLogin":"insert into bi_online.login_log_all_store (type,cube_id,plat_id,timestamp,hashid) values (?,?,?,?,?)",
+    "insertLogout":"insert into bi_online.logout_log_all_store (type,cube_id,plat_id,timestamp,hashid) values (?,?,?,?,?)",
+    "insertLogAll":"insert into bi_online.all_time_log_yyyymm (`primary_key`,`timestamp`,`type`,`cube_id`,`plat_id`,`ip`,`isp_id`,`country_id`,`region_id`,`city_id`) values (?,?,?,?,?,?,?,?,?,?)"
+}

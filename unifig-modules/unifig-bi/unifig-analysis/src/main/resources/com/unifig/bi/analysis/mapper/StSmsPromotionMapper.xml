@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.bi.analysis.mapper.StSmsPromotionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.bi.analysis.model.StSmsPromotion">
+        <id column="id" property="id" />
+        <result column="dept_id" property="deptId" />
+        <result column="dept_name" property="deptName" />
+        <result column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="promotion_id" property="promotionId" />
+        <result column="ratel_no" property="ratelNo" />
+        <result column="create_time" property="createTime" />
+        <result column="edit_time" property="editTime" />
+        <result column="enable" property="enable" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dept_id, dept_name, user_id, user_name, promotion_id, ratel_no, create_time, edit_time, enable
+    </sql>
+    <select id="lineDay" resultType="java.util.Map" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=" UNION ">
+            SELECT
+            statis_date `statisDate`,
+            CONCAT(
+            CONCAT(LPAD(hour,2,0), ':00-'),
+            CONCAT(LPAD(hour,2,0), ':59')
+            ) `hour`,
+            hour as 'hourId',
+            count(id) joinPromotionCount
+            FROM
+            bi_st.${item.tableName} t
+            <where>
+                and `hour` !=- 1
+                <if test="item.promotionId!=null">
+                    AND promotion_id =#{item.promotionId}
+                </if>
+                <if test="item.statisDate!=null">
+                    AND statis_date =#{item.statisDate}
+                </if>
+            </where>
+            GROUP BY statis_date,hour
+        </foreach>
+    </select>
+
+
+    <select id="line" resultType="java.util.Map" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=" UNION ALL ">
+            SELECT
+            statis_date `statisDate`,
+            count(id) joinPromotionCount
+            FROM
+            bi_st.${item.tableName} t
+            <where>
+                <if test="item.promotionId!=null">
+                    AND promotion_id =#{item.promotionId}
+                </if>
+                <if test="item.statisDate!=null">
+                    AND statis_date =#{item.statisDate}
+                </if>
+            </where>
+            GROUP BY  statis_date
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,46 @@
+{
+
+    "create_all_sche_log_all_store":"CREATE TABLE IF NOT EXISTS bi_online.all_sche_log_all_store (
+                                  `master_id` int(10) DEFAULT NULL COMMENT 'master_id',
+                                  `sche_num` int(10) DEFAULT NULL COMMENT '日程总数',
+                                  KEY `idx_schedule` (`master_id`) USING BTREE
+                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                                
+    "create_tmp_sche_log_all_store":"CREATE TABLE IF NOT EXISTS bi_tmp.tmp_all_sche_log_all_store (
+                                      `master_id` int(10) DEFAULT NULL COMMENT 'master_id',
+                                      `sche_num` int(10) DEFAULT NULL COMMENT '日程总数',
+                                      KEY `idx_schedule` (`master_id`) USING BTREE
+                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                                
+    "selectSource":"SELECT
+                        `master`,
+                        `action`
+                    FROM
+                        zuobiao_log.schedule_log_yyyy_mm 
+                    WHERE
+                        TIMESTAMP > ${timestamp} 
+                        LIMIT ${offset},
+                        ${rows}",
+                        
+    "insert_all_sche_log_all_store":"INSERT INTO bi_online.all_sche_log_all_store ( `master_id` , `sche_num` ) VALUES ( ?,? )",
+    
+    "insert_tmp":"INSERT INTO bi_tmp.tmp_all_sche_log_all_store ( `master_id`, `sche_num` ) 
+                    SELECT
+                    `master_id`,
+                    `sche_num` 
+                    FROM
+                        bi_online.all_sche_log_all_store", 
+                        
+    "insert_all_sche_sum":"INSERT INTO bi_online.all_sche_log_all_store ( `master_id`, `sche_num` ) 
+                   SELECT
+                        `master_id`,
+                        SUM( sche_num ) 
+                    FROM
+                        bi_tmp.tmp_all_sche_log_all_store
+                    GROUP BY
+                        `master_id`", 
+                              
+     "truncate_all_sche":"TRUNCATE TABLE bi_online.all_sche_log_all_store",
+     
+     "drop_tmp":"drop TABLE IF EXISTS  bi_tmp.tmp_all_sche_log_all_store"
+}

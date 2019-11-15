@@ -1,0 +1,247 @@
+{
+	 "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st.st_active_user_retain_dm_yyyymm (
+                                    `statis_date` int(9) NOT NULL,
+                                    `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                    `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                    `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                    `app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+                                    `active_user_count` bigint(20) NOT NULL,
+                                    `second_days_retained` bigint(20) NOT NULL,
+                                    `third_days_retained` bigint(20) NOT NULL,
+                                    `fourth_days_retained` bigint(20) NOT NULL,
+                                    `fifth_days_retained` bigint(20) NOT NULL,
+                                    `sixth_days_retained` bigint(20) NOT NULL,
+                                    `seventh_days_retained` bigint(20) NOT NULL,
+                                    `fifteenth_days_retained` bigint(20) NOT NULL,
+                                    `thirtieth_days_retained` bigint(20) NOT NULL,
+                                    INDEX `idx_st_active_user_retain_dm_yyyymm` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+								
+	 "create_ds_tmpuser_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_active_user_retain_ds_all_store (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+								    `user_id` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_active_user_retain_ds_all_store` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+								) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+                                
+	 "insert_ds_tmpuser_yyyymmdd": "INSERT INTO bi_tmp.tmp_st_active_user_retain_ds_all_store (
+								    `statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`,
+								    `user_id`
+								) SELECT
+									`statis_date`,
+									`hour`,
+									- 1 AS channel_id,
+									`app_plat_id`,
+									`app_version_id`,
+									`user_id`
+								FROM
+									bi_dw.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND statis_date = ${store_id}
+								GROUP BY
+									`statis_date`,
+									`hour`,
+									`app_plat_id`,
+									`app_version_id`,
+									`user_id`",
+	
+	 "insertDmSql": "INSERT INTO bi_st.st_active_user_retain_dm_yyyymm (
+							        `statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`,
+								    `active_user_count`,
+								    `second_days_retained`,
+								    `third_days_retained`,
+								    `fourth_days_retained`,
+								    `fifth_days_retained`,
+								    `sixth_days_retained`,
+								    `seventh_days_retained`,
+								    `fifteenth_days_retained`,
+								    `thirtieth_days_retained`
+						        )",
+	 "selectDsSql": "   SELECT
+									ifnull(`statis_date` ,- 1) AS statis_date,
+									ifnull(`hour` ,- 1) AS hour,
+									-1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+									ifnull(`app_version_id` ,- 1) AS app_version_id,
+									count(DISTINCT `user_id`) AS active_user_count,
+									0 AS	`second_days_retained`,
+							        0 AS	`third_days_retained`,
+								    0 AS	`fourth_days_retained`,
+								    0 AS	`fifth_days_retained`,
+								    0 AS	`sixth_days_retained`,
+								    0 AS	`seventh_days_retained`,
+								    0 AS	`fifteenth_days_retained`,
+								    0 AS	`thirtieth_days_retained`
+								FROM
+									bi_dw.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+						
+	 "drop_ds_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp.tmp_st_active_user_retain_ds_yyyymmdd",
+							
+	 "create_ds_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_active_user_retain_ds_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+								    `active_user_count` bigint(20) NOT NULL,
+								    `second_days_retained` bigint(20) NOT NULL,
+								    `third_days_retained` bigint(20) NOT NULL,
+								    `fourth_days_retained` bigint(20) NOT NULL,
+								    `fifth_days_retained` bigint(20) NOT NULL,
+								    `sixth_days_retained` bigint(20) NOT NULL,
+								    `seventh_days_retained` bigint(20) NOT NULL,
+								    `fifteenth_days_retained` bigint(20) NOT NULL,
+								    `thirtieth_days_retained` bigint(20) NOT NULL,
+								    INDEX `idx_st_active_user_retain_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+								) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+								
+	 "insert_ds_old_yyyymmdd": "INSERT INTO bi_tmp.tmp_st_active_user_retain_ds_yyyymmdd (
+							        `statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`,
+								    `active_user_count`,
+								    `second_days_retained`,
+								    `third_days_retained`,
+								    `fourth_days_retained`,
+								    `fifth_days_retained`,
+								    `sixth_days_retained`,
+								    `seventh_days_retained`,
+								    `fifteenth_days_retained`,
+								    `thirtieth_days_retained`
+						        )SELECT
+									`statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`,
+								    `active_user_count`,
+								    `second_days_retained`,
+								    `third_days_retained`,
+								    `fourth_days_retained`,
+								    `fifth_days_retained`,
+								    `sixth_days_retained`,
+								    `seventh_days_retained`,
+								    `fifteenth_days_retained`,
+								    `thirtieth_days_retained`
+								FROM
+									bi_st.st_active_user_retain_dm_yyyymm
+								WHERE
+									1 = 1
+								AND `statis_date`=  ${statis_date}",
+								
+	 "insert_ds_new_yyyymmdd": "INSERT INTO bi_tmp.tmp_st_active_user_retain_ds_yyyymmdd (
+							        `statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`,
+								    `active_user_count`,
+								    `second_days_retained`,
+								    `third_days_retained`,
+								    `fourth_days_retained`,
+								    `fifth_days_retained`,
+								    `sixth_days_retained`,
+								    `seventh_days_retained`,
+								    `fifteenth_days_retained`,
+								    `thirtieth_days_retained`
+						         )",
+	 "select_ds_new_yyyymmdd": "SELECT
+									${statis_date} as statis_date,
+									ifnull(`hour` ,- 1) AS hour,
+									- 1 AS channel_id,
+									ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+									ifnull(`app_version_id` ,- 1) AS app_version_id,
+									0 AS active_user_count,
+									${second_days_retained},
+								    ${third_days_retained},
+								    ${fourth_days_retained},
+								    ${fifth_days_retained},
+								    ${sixth_days_retained},
+								    ${seventh_days_retained},
+								    ${fifteenth_days_retained},
+								    ${thirtieth_days_retained}
+								FROM
+									(
+										SELECT
+											s.statis_date,
+											s.`hour`,
+											s.app_plat_id,
+											s.app_version_id,
+											s.user_id
+										FROM
+											bi_tmp.tmp_st_active_user_retain_ds_all_store t
+										LEFT JOIN bi_dw.dw_login_log_all_store s ON t.user_id = s.user_id
+										WHERE
+											1 = 1
+										AND t.statis_date = ${retains_day}
+										AND s.statis_date = ${yesterday}
+										GROUP BY
+											s.statis_date,
+											s.`hour`,
+											s.app_plat_id,
+											s.app_version_id,
+											s.user_id
+									) a",
+	 "insertDmSelectSql": "INSERT INTO bi_st.st_active_user_retain_dm_yyyymm (
+									`statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`,
+								    `active_user_count`,
+								    `second_days_retained`,
+								    `third_days_retained`,
+								    `fourth_days_retained`,
+								    `fifth_days_retained`,
+								    `sixth_days_retained`,
+								    `seventh_days_retained`,
+								    `fifteenth_days_retained`,
+								    `thirtieth_days_retained`
+								) SELECT
+									`statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+									`app_version_id`,
+									sum(`active_user_count`) AS 'active_user_count',
+									sum(`second_days_retained`) AS second_days_retained,
+									sum(`third_days_retained`) AS third_days_retained,
+									sum(`fourth_days_retained`) AS fourth_days_retained,
+									sum(`fifth_days_retained`) AS fifth_days_retained,
+									sum(`sixth_days_retained`) AS sixth_days_retained,
+									sum(`seventh_days_retained`) AS seventh_days_retained,
+									sum(`fifteenth_days_retained`) AS fifteenth_days_retained,
+									sum(`thirtieth_days_retained`) AS thirtieth_days_retained
+								FROM
+									bi_tmp.tmp_st_active_user_retain_ds_yyyymmdd
+								WHERE
+									1 = 1
+								GROUP BY
+									`statis_date`,
+								    `hour`,
+								    `channel_id`,
+								    `app_plat_id`,
+								    `app_version_id`",
+								    
+	"delete_yes_date":"delete from bi_st.st_active_user_retain_dm_yyyymm where 1=1 AND statis_date = ${statisDate} ",
+	
+	"delete_yes_tmpDate":"delete from bi_tmp.tmp_st_active_user_retain_ds_all_store where 1=1 AND statis_date = ${statisDate} "							    
+								    
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <property resource="logback.properties" />
+    <!-- 本项目的名字 -->
+    <contextName>${context.name}</contextName>
+    <!--<springProperty scope="context" name="KAFKA_SERVER" source="spring.cloud.stream.kafka.binder.brokers"/>-->
+
+    <!--<appender name="KafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">-->
+        <!--<encoder class="com.github.danielwegener.logback.kafka.encoding.LayoutKafkaMessageEncoder">-->
+            <!--<layout class="net.logstash.logback.layout.LogstashLayout">-->
+                <!--<includeContext>true</includeContext>-->
+                <!--<includeCallerData>true</includeCallerData>-->
+                <!--<customFields>{"system":"unifig-system"}</customFields>-->
+                <!--<fieldNames class="net.logstash.logback.fieldnames.ShortenedFieldNames"/>-->
+            <!--</layout>-->
+            <!--<charset>UTF-8</charset>-->
+        <!--</encoder>-->
+
+        <!--&lt;!&ndash;kafka topic &ndash;&gt;-->
+        <!--<topic>unifig-system</topic>-->
+        <!--<keyingStrategy class="com.github.danielwegener.logback.kafka.keying.HostNameKeyingStrategy"/>-->
+        <!--<deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy"/>-->
+        <!--<producerConfig>bootstrap.servers=118.25.129.188:9092</producerConfig>-->
+    <!--</appender>-->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8"> <!-- encoder 可以指定字符集，对于中文输出有意义 -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">　　　　　　
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">　　　　　　　　　　　　
+            <fileNamePattern>logs/logFile.%d{yyyy-MM-dd}.log</fileNamePattern>　　　　　　　　　　　
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+
+
+
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${conversion.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- root file 日志
+         ${log.dir}/error.%d{${rolling.policy.file.name.pattern}}%d{mmss}.%i.log.zip
+     -->
+    <appender name="root-file-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/${prifix}-error-log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/${prifix}-error-log.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>${max.history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${conversion.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="root-file-warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/${prifix}-warn-log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/${prifix}-warn-log.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>${max.history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${conversion.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="root-file-info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/${prifix}-info-log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/${prifix}-info-log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- <timeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy> -->
+            <maxHistory>${max.history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${conversion.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="root-file-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/${prifix}-debug-log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- %d{${rolling.policy.file.name.pattern}}%d{mmss}.%i.log.zip -->
+            <fileNamePattern>${log.dir}/${prifix}-debug-log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- <timeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy> -->
+            <maxHistory>${max.history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${conversion.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="${root.level}">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="console" />
+        <appender-ref ref="root-file-error"/>
+        <appender-ref ref="root-file-warn"/>
+        <appender-ref ref="root-file-info"/>
+        <appender-ref ref="root-file-debug"/>
+    </root>
+
+
+</configuration>

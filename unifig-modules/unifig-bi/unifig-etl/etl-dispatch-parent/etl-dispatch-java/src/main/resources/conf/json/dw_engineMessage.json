@@ -1,0 +1,95 @@
+{
+   "templateDmTableSql": "CREATE TABLE IF NOT EXISTS bi_dw.dw_engine_message_log_dm_yyyymm (
+                              `statis_date` int(9) NOT NULL,
+                              `master` varchar(13) DEFAULT NULL COMMENT '发送者',
+                              `direct` int(2) DEFAULT NULL COMMENT '流量上下行, 1-上行（服务器->终端），2-下行（服务器<-终端）',
+                              `action` varchar(255) DEFAULT NULL COMMENT '操作动作',
+                              `sender` varchar(32) NOT NULL COMMENT '发送者',
+                              `receiver` varchar(32) NOT NULL COMMENT '接收者',
+                              `message_type` int(3) NOT NULL DEFAULT '-9' COMMENT '内容类型:1:Text:文本，2:File：文件，3:Image：图片，4:VoiceClip：短语音，5:VideoClip：短视频，6:Card：卡片消息，7:History：历史消息，8:Rich：富文本消息',
+                              `content_size` bigint(13) DEFAULT '0' COMMENT '上行 消息本身的大小',
+                              `entity_size` bigint(13) DEFAULT '0' COMMENT '文件的大小，即上行((用户上传到服务器的文件大小)',
+                              `network_id` int(10) DEFAULT NULL COMMENT 'network 网络类型维表dim_network字典匹配自增获取',
+                              `app_plat_id` int(10) DEFAULT NULL COMMENT 'app_device_type  平台应用类型维表dim_app_plat字典匹配自增获取',
+                              `app_id` int(10) DEFAULT NULL COMMENT 'app_id',
+                              `app_version_id` int(10) DEFAULT '2' COMMENT 'app_version 平台应用 版本维表conf_app_version字典匹配自增获取',
+                              `is_group` int(2) DEFAULT '0' COMMENT '是否是群消息,1:不是群消息，2：是群消息',
+                              `year` int(9) NOT NULL DEFAULT '1900' COMMENT '年',
+                              `month` int(9) NOT NULL DEFAULT '0' COMMENT '月',
+                              `day` int(9) NOT NULL DEFAULT '0' COMMENT '日',
+                              `hour` int(9) NOT NULL DEFAULT '0' COMMENT '小时',
+                              `message_count` bigint(20) NOT NULL COMMENT '消息条数',
+                              KEY `idx_dw_message_log_dm_yyyymm_date` (`year`,`month`,`day`),
+                              KEY `idx_dw_message_log_dm_yyyymm_range` (`statis_date`)
+                            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;",                          
+                                
+     "insertDmSelectSql": "INSERT INTO bi_dw.dw_engine_message_log_dm_yyyymm (
+                                    `statis_date`,
+                                    `master`,
+                                    `direct`,
+                                    `action`,
+                                    `sender`,
+                                    `receiver`,
+                                    `message_type`,
+                                    `content_size`,
+                                    `entity_size`,
+                                    `network_id`,
+                                    `app_plat_id`,
+                                    `app_id`,
+                                    `app_version_id`,
+                                    `is_group`,
+                                    `year`,
+                                    `month`,
+                                    `day`,
+                                    `hour`,
+                                    `message_count`
+                                ) SELECT
+                                        `store_id` AS statis_date,
+                                        `master`,
+                                        `direct`,
+                                        `action`,
+                                        `from` AS sender,
+                                        `to` AS receiver,
+                                        `type` AS message_type,
+                                        sum(`content_bytes`) AS content_size,
+                                        sum(`entity_bytes`) AS entity_size,
+                                        `network_type` AS network_id,
+                                        `app_device_type` AS app_plat_id,
+                                        `app_id`,
+                                        `app_version` AS app_version_id,
+                                        `is_group`,
+                                        `year`,
+                                        `month`,
+                                        `day`,
+                                        `hour`,
+                                        count(1) AS message_count
+                                    FROM
+                                        bi_dwd.dwd_engine_message_log_dm_yyyymm
+                                    WHERE
+                                        1 = 1
+                                    AND `store_id` = ${store_id}
+                                    GROUP BY
+                                            `store_id`,
+                                            `master`,
+                                            `direct`,
+                                            `action`,
+                                            `from`,
+                                            `to`,
+                                            `type`,
+                                            `network_type`,
+                                            `app_device_type`,
+                                            `app_id`,
+                                            `app_version`,
+                                            `is_group`,
+                                            `year`,
+                                            `month`,
+                                            `day`,
+                                            `hour`",
+      "delete_yes_date":"delete from bi_dw.dw_engine_message_log_dm_yyyymm where 1=1 AND statis_date = ${statisDate} ",
+      "delete_table":"drop TABLE IF EXISTS bi_dw.dw_engine_message_log_dm_yyyymm ;",
+      "delete_date":"delete from bi_dw.dw_engine_message_log_dm_yyyymm where 1=1 AND statis_date < ${statisDate} "
+
+
+
+
+}

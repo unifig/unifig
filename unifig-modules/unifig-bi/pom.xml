@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>unifig-modules</artifactId>
+        <groupId>com.unifig</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>unifig-bi</artifactId>
+    <modules>
+        <module>unifig-etl</module>
+        <module>unifig-analysis</module>
+    </modules>
+    <packaging>pom</packaging>
+    <properties>
+        <!-- :::::::::::::::: 子模块version :::::::::::::::: -->
+        <etl-dispatch-base.version>0.0.1-SNAPSHOT</etl-dispatch-base.version>
+        <etl-dispatch-utils.version>0.0.1-SNAPSHOT</etl-dispatch-utils.version>
+        <etl-dispatch-script.version>0.0.1-SNAPSHOT</etl-dispatch-script.version>
+        <etl-dispatch-config.version>0.0.1-SNAPSHOT</etl-dispatch-config.version>
+        <etl-dispatch-quartz.version>0.0.1-SNAPSHOT</etl-dispatch-quartz.version>
+        <etl-dispatch-java.version>0.0.1-SNAPSHOT</etl-dispatch-java.version>
+        <etl-dispatch-register.version>0.0.1-SNAPSHOT</etl-dispatch-register.version>
+        <etl-dispatch-gather.version>0.0.1-SNAPSHOT</etl-dispatch-gather.version>
+
+        <!-- :::::::::::::::: 核心框架version :::::::::::::::: -->
+        <!-- 基础框架 -->
+        <spring-boot.version>1.5.3.RELEASE</spring-boot.version>
+        <ehcache.version>2.10.3</ehcache.version>
+        <guava.version>22.0</guava.version>
+        <shiro.version>1.4.0</shiro.version>
+
+        <!-- XML解析 -->
+        <dom4j.version>1.6.1</dom4j.version>
+        <jdom.version>2.0.2</jdom.version>
+        <jaxen.version>1.1.4</jaxen.version>
+        <xstream.version>1.4.3</xstream.version>
+        <!-- 日期处理工具 -->
+        <joda-time.version>2.10.1</joda-time.version>
+        <joda-time-jsptags.version>1.1.4</joda-time-jsptags.version>
+        <!-- apache commons -->
+        <commons-lang.version>2.6</commons-lang.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-codec.version>1.7</commons-codec.version>
+        <commons-beanutils.version>1.8.3</commons-beanutils.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-fileupload.version>1.3</commons-fileupload.version>
+        <commons-email.version>1.3.3</commons-email.version>
+        <!-- javabean映射工具 -->
+        <dozer.version>5.4.0</dozer.version>
+        <jackson.version>2.9.8</jackson.version>
+        <javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>
+        <jstl.version>1.2</jstl.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <mybatis-spring-boot>1.3.0</mybatis-spring-boot>
+        <mybatisplus-spring-boot-starter>1.0.4</mybatisplus-spring-boot-starter>
+        <mysql-connector.version>8.0.15</mysql-connector.version>
+        <druid.version>1.0.29</druid.version>
+        <source-plugin.version>2.2.1</source-plugin.version>
+        <resources-plugin.version>2.6</resources-plugin.version>
+        <compiler-plugin.version>3.1</compiler-plugin.version>
+        <enforcer-plugin.version>1.3.1</enforcer-plugin.version>
+        <findbugs-plugin.version>2.5.2</findbugs-plugin.version>
+        <jar-plugin.version>2.4</jar-plugin.version>
+        <quartz.version>2.2.3</quartz.version>
+        <surefire-plugin.version>2.16</surefire-plugin.version>
+        <maven-clean-plugin>3.0.0</maven-clean-plugin>
+        <maven-resources-plugin>3.0.2</maven-resources-plugin>
+        <maven-compiler-plugin>3.7.0</maven-compiler-plugin>
+    </properties>
+</project>

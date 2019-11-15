@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="etl.dispatch.config.dao.ISignInfoTasksDao">
+   <resultMap id="SignInfoTasksEntityMap" type="etl.dispatch.config.entity.SignInfoTasksEntity">
+		<result column="pk_id" property="pkId" />
+		<result column="classify" property="classify" />
+		<result column="task_id" property="taskId" />
+		<result column="task_name" property="taskName" />
+		<result column="script_path" property="scriptPath" />
+		<result column="time_sign" property="timeSign" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="log_time" property="logTime" />
+		<result column="is_success" property="isSuccess" />
+		<result column="message" property="message" />
+	</resultMap>
+	<parameterMap id="SignInfoTasksEntity" type="etl.dispatch.config.entity.SignInfoTasksEntity"/>
+	
+	<sql id="All_Column_List">
+		`pk_id` ,`classify` ,`task_id` ,`task_name` ,`script_path` ,`time_sign` ,`start_time` ,`end_time` ,`log_time` ,`is_success` ,`message`
+	</sql>
+	
+	<insert id="saveSignInfoTasks" parameterMap="SignInfoTasksEntity">
+		insert into sign_info_tasks(
+		   `classify` ,
+		   `task_id` ,
+		   `task_name` ,
+		   `script_path` ,
+		   `time_sign` ,
+		   `start_time` ,
+		   `end_time` ,
+		   `is_success` ,
+		   `message`
+		)VALUES(
+		   #{classify,jdbcType=INTEGER},
+		   #{taskId,jdbcType=VARCHAR},
+		   #{taskName,jdbcType=VARCHAR},
+		   #{scriptPath,jdbcType=VARCHAR},
+		   #{timeSign,jdbcType=VARCHAR},
+		   #{startTime,jdbcType=TIMESTAMP},
+		   #{endTime,jdbcType=TIMESTAMP},
+		   #{isSuccess,jdbcType=INTEGER},
+		   #{message,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<delete id="deleteSignInfoTasks" parameterMap="SignInfoTasksEntity">
+		delete from sign_info_tasks 
+		 where 1=1
+		AND classify = #{classify}
+		AND task_id = #{taskId}
+		AND time_sign = #{timeSign}
+	</delete>
+	
+	<select id="findSignInfoTasks"  parameterMap="SignInfoTasksEntity" resultMap="SignInfoTasksEntityMap">
+		select
+		    <include refid="All_Column_List" />
+		from 
+		     `sign_info_tasks`
+		WHERE 
+		     1=1 
+		<if test='pkId!=null'>
+			AND pk_id =#{pkId}
+		</if>
+		<if test='classify!=null'>
+			AND classify =#{classify}
+		</if>
+		<if test='taskId!=null'>
+			AND task_id =#{taskId}
+		</if>
+		<if test='timeSign!=null'>
+			AND time_sign =#{timeSign}
+		</if>
+		<if test='isSuccess!=null'>
+			AND is_success =#{isSuccess}
+		</if>
+	</select>
+</mapper>

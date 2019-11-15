@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: unifig-analysis
+  cloud:
+    config:
+      uri: http://127.0.0.1:10010
+      profile: dev
+      label: master

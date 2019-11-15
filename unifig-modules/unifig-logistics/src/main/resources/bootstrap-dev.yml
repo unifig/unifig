@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: unifig-logistics
+  cloud:
+    config:
+      uri: http://114.67.88.118:10010
+      profile: dev
+      label: master

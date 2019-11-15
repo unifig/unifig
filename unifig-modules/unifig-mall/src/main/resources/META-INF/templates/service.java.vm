@@ -1,0 +1,50 @@
+/**
+ * FileName: $!{table.comment}
+ * Author:   ${author}
+ * Date:     ${date}
+ * Description: $!{table.comment}
+ * History:
+ * <author>          <time>          <version>          <desc>
+ */
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+import com.unifig.result.ResultData;
+import java.util.List;
+
+/**
+ * <p>
+ * $!{table.comment} 服务类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+	/**
+	 * 查询分页数据
+ 	*/
+	ResultData<${entity}> findListByPage(int pageNum,int pageSize);
+
+
+	/**
+ 	* 根据id查询
+ 	*/
+	ResultData<${entity}> getById(String id);
+
+	/**
+	 * 新增
+	 */
+	ResultData add(${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+
+	/**
+	 * 删除
+	 */
+	ResultData delete(List<String> ids);
+
+	/**
+ 	* 修改
+ 	*/
+	ResultData update(${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+}

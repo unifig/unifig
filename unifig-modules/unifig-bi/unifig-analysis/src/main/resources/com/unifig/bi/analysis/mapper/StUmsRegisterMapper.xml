@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unifig.bi.analysis.mapper.StUmsRegisterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.unifig.bi.analysis.model.StUmsRegister">
+        <id column="id" property="id"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="ratel_no" property="ratelNo"/>
+        <result column="create_time" property="createTime"/>
+        <result column="edit_time" property="editTime"/>
+        <result column="enable" property="enable"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dept_id, dept_name, user_id, user_name, ratel_no, create_time, edit_time, enable
+    </sql>
+
+    <select id="countRegister" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        IFNULL((    SELECT
+                    count( id )
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId}
+             AND year = #{year}),0)
+         yearRegisterCount,
+         IFNULL((    SELECT
+                    count( id )
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId}
+             AND month = #{month}),0)
+          monthRegisterCount,
+          IFNULL((    SELECT
+                    count( id )
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId}
+             AND day = #{day}),0)
+          dayRegisterCount
+        FROM
+          bi_st.st_ums_register
+            where dept_id=#{deptId}
+	        GROUP BY dept_id
+    </select>
+
+
+    <select id="countDayReport" resultType="java.util.Map" parameterType="java.util.Map">
+         SELECT
+                CONCAT(year,month,day) staticDate,
+                    count( id ) dayCount
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId} and year = #{year} and month = #{month}
+             GROUP BY day
+    </select>
+
+
+    <select id="countYearReport" resultType="java.util.Map" parameterType="java.util.Map">
+         SELECT
+                year staticDate,
+                count( id ) yearCount
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId} and year = #{year}
+    </select>
+
+    <select id="countMonthReport" resultType="java.util.Map" parameterType="java.util.Map">
+         SELECT
+                CONCAT(year,month) staticDate,
+                count( id ) monthCount
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId} and year = #{year}
+             GROUP BY month
+    </select>
+
+    <select id="countWeekReport" resultType="java.util.Map" parameterType="java.util.Map">
+         SELECT
+                week staticDate,
+                count( id ) weekCount
+             FROM
+                     st_ums_register
+             WHERE
+                      dept_id = #{deptId} and year = #{year}
+             GROUP BY week
+    </select>
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,,,, -->
+	<!--ConsoleAppender，顾名思义是要打印到控制台 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d %p (%file:%line\)- %m%n</pattern>   <!--pattern 配置控制台日志的格式 -->
+			<charset>UTF-8</charset>   <!--日志的编码格式，UTF-8和我的IDE编码格式一致，不会出现乱码 -->
+		</encoder>
+	</appender>
+	<!--RollingFileAppender,顾名思义，是要输出到文件的 -->
+	<appender name="baselog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>./logs/base.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>./logs/base.log.%d.%i</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 64 MB -->
+				<maxFileSize>64 MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern> %d %p (%file:%line\)- %m%n </pattern>
+			<charset>UTF-8</charset> <!-- 此处设置字符集 -->
+		</encoder>
+	</appender>
+	<!--日志输出级别，info级别输出到控制台 -->
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+	</root>
+	<!--日志输出级别，info级别输出文件 -->
+	<logger name="com.zuobiao.etl" level="info">
+		<appender-ref ref="baselog" />
+	</logger>
+</configuration>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="etl.dispatch.config.dao.IConfRelyGroupDao">
+   <resultMap id="ConfRelyGroupEntityMap" type="etl.dispatch.config.entity.ConfRelyGroupEntity">
+		<result column="pk_id" property="pkId" />
+		<result column="group_id" property="groupId" />
+		<result column="relygroup_id" property="relyGroupId" />
+		<result column="status" property="status" />
+		<result column="create_user" property="createUser" />
+		<result column="create_time" property="createTime" />
+		<result column="update_user" property="updateUser" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<parameterMap id="ConfRelyGroupEntity" type="etl.dispatch.config.entity.ConfRelyGroupEntity"/>
+	
+	<sql id="All_Column_List">
+		`pk_id` , `group_id` , `relygroup_id` , `status` , `create_user` , `create_time` , `update_user` , `update_time` 
+	</sql>
+	
+	<select id="findConfRelyGroup"  parameterMap="ConfRelyGroupEntity" resultMap="ConfRelyGroupEntityMap">
+		select
+		    <include refid="All_Column_List" />
+		from 
+		     `conf_rely_group`
+		WHERE 
+		     1=1 
+		<if test='pkId!=null'>
+			AND pk_id =#{pkId}
+		</if>
+		<if test='groupId!=null'>
+			AND group_id =#{groupId}
+		</if>
+		<if test='relyGroupId!=null'>
+			AND relygroup_id =#{relyGroupId}
+		</if>
+		<if test='status!=null'>
+			AND status =#{status}
+		</if>
+	</select>
+</mapper>

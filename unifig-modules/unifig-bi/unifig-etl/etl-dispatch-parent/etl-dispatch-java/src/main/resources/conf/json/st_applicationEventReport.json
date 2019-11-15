@@ -1,0 +1,114 @@
+{
+	"create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st.`st_event_report_dm_yyyymm` (
+							 `statis_date` int(9) NOT NULL,
+							 `hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+							 `app_version_id` MEDIUMINT (9) NOT NULL,
+							 `channel_id` int(9) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+							 `app_plat_id` int(9) NOT NULL DEFAULT '0' COMMENT '应用类型ID',
+							 `event_key_id` int(9) NOT NULL,
+							 `yes_message_count` int(9) DEFAULT NULL COMMENT '消息数',
+							 `yes_user_count` int(9) DEFAULT NULL COMMENT '用户数',
+							 `lastyes_message_count` int(9) DEFAULT NULL COMMENT '前天消息数',
+							 `lastyes_user_count` int(9) DEFAULT NULL COMMENT '前天用户数',
+							 KEY `idx_st_event_report_dm` (`statis_date`) USING BTREE
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+							
+	"drop_ds_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp.tmp_st_event_reportds_yyyymmdd",
+	 							
+	"create_ds_tm_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_event_reportds_yyyymmdd (
+								     `statis_date` int(9) NOT NULL,
+									 `hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+									 `app_version_id` MEDIUMINT (9) NOT NULL,
+									 `channel_id` int(9) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+									 `app_plat_id` int(9) NOT NULL DEFAULT '0' COMMENT '应用类型ID',
+									 `event_key_id` int(9) NOT NULL,
+									 `yes_message_count` int(9) DEFAULT NULL COMMENT '消息数',
+									 `yes_user_count` int(9) DEFAULT NULL COMMENT '用户数',
+									 `lastyes_message_count` int(9) DEFAULT NULL COMMENT '前天消息数',
+									 `lastyes_user_count` int(9) DEFAULT NULL COMMENT '前天用户数',
+								    INDEX `idx_tmp_st_event_reportds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`)
+								) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									
+	 "insertTmpSql": "INSERT INTO bi_tmp.tmp_st_event_reportds_yyyymmdd (
+							 `statis_date` ,
+							 `hour` ,
+							 `app_version_id` ,
+							 `channel_id` ,
+							 `app_plat_id` ,
+							 `event_key_id` ,
+							 `yes_message_count` ,
+							 `yes_user_count` ,
+							 `lastyes_message_count` ,
+							 `lastyes_user_count`
+						)",
+						
+	 "selectDsTheYesSql": "SELECT
+							ifnull(dw.`statis_date` ,- 1) AS statis_date,
+							ifnull(dw.`hour` ,- 1) AS hour,
+							ifnull(dw.`app_version_id` ,- 1) AS app_version_id,
+							ifnull(dw.`channel_id` ,- 1) AS channel_id,
+							ifnull(dw.`app_plat_id` ,- 1) AS app_plat_id,
+							ifnull(dw.`event_key_id` ,- 1) AS event_key_id,
+							sum(dw.`visit_count`) AS yes_message_count,
+							count(DISTINCT dw.device_id) AS yes_user_count,
+							0 as  lastyes_message_count,
+							0 as  lastyes_user_count
+						FROM
+							bi_dw.dw_event_report_dm_yyyymm dw
+						WHERE
+							1 = 1
+						AND dw.`statis_date` = ${store_id}",
+	"selectDsBefYesSql": "SELECT
+							ifnull(dw.`statis_date` + 1 ,- 1) AS statis_date,
+							ifnull(dw.`hour` ,- 1) AS hour,
+							ifnull(dw.`app_version_id` ,- 1) AS app_version_id,
+							ifnull(dw.`channel_id` ,- 1) AS channel_id,
+							ifnull(dw.`app_plat_id` ,- 1) AS app_plat_id,
+							ifnull(dw.`event_key_id` ,- 1) AS event_key_id,
+							0 as  yes_message_count,
+							0 as  yes_user_count,
+							sum(dw.`visit_count`) AS lastyes_message_count,
+							count(DISTINCT dw.device_id) lastyes_user_count
+						FROM
+							bi_dw.dw_event_report_dm_yyyymm dw
+						WHERE
+							1 = 1
+						AND dw.`statis_date` = ${store_id}",
+						
+	 "insertSelectDmSql": "INSERT INTO bi_st.st_event_report_dm_yyyymm (
+							 `statis_date` ,
+							 `hour` ,
+							 `app_version_id` ,
+							 `channel_id` ,
+							 `app_plat_id` ,
+							 `event_key_id` ,
+							 `yes_message_count` ,
+							 `yes_user_count` ,
+							 `lastyes_message_count` ,
+							 `lastyes_user_count`
+						)SELECT
+							ifnull(`statis_date` ,- 1) AS statis_date,
+							ifnull(`hour` ,- 1) AS hour,
+							ifnull(`app_version_id` ,- 1) AS app_version_id,
+							ifnull(`channel_id` ,- 1) AS channel_id,
+							ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+							ifnull(`event_key_id` ,- 1) AS event_key_id,
+							sum(`yes_message_count`)  as  yes_message_count,
+							sum(`yes_user_count`)  as  yes_user_count,
+							sum(`lastyes_message_count`) AS lastyes_message_count,
+							sum(`lastyes_user_count`) as lastyes_user_count
+						FROM
+							bi_tmp.tmp_st_event_reportds_yyyymmdd dw
+						WHERE
+							1 = 1
+						AND dw.`statis_date` = ${store_id}
+						group by `statis_date` ,
+							 `hour` ,
+							 `app_version_id` ,
+							 `channel_id` ,
+							 `app_plat_id` ,
+							 `event_key_id` ",
+						
+	 
+     "delete_yes_date":"delete from bi_st.st_event_report_dm_yyyymm where 1=1 AND statis_date = ${statisDate}"
+}

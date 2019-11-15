@@ -1,0 +1,176 @@
+{
+	"create_mdt_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_overview_analysis_dt_yyyymm (
+                                    `statis_date` int(9) NOT NULL,
+                                    `user_count` bigint(20) NOT NULL COMMENT '累计用户',
+                                    `day_user_count` bigint(20) NOT NULL COMMENT '日活用户数',
+                                    `week_user_count` bigint(20) NOT NULL COMMENT '周活用户数',
+                                    `month_user_count` bigint(20) NOT NULL COMMENT '月活用户数',
+                                    INDEX `idx_st_overview_analysis_dt_yyyymm` (`statis_date`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",					    
+									 
+     "select_dt_usercount": "SELECT COUNT(DISTINCT a.user_id) as user_count
+									FROM(
+										select user_id,guest from bi_ods_spap.ods_user_info_dm_yyyymm
+										) a
+									WHERE 1=1
+									AND a.`guest` = 0",
+										
+	 "select_dt_WMusercount": "SELECT COUNT(user_id) as user_count
+									FROM
+										bi_dw_spap.dw_login_log_all_store
+									WHERE 
+									     1 = 1
+						            AND `statis_date`>= ${min_id}
+						            AND `statis_date`<= ${max_id}",
+						            
+     "insertMDtValuesSql": "INSERT INTO bi_st_spap.st_overview_analysis_dt_yyyymm (
+									`statis_date`,
+									`user_count`,
+									`day_user_count`,
+									`week_user_count`,
+									`month_user_count`
+								)VALUES(
+									${statis_date},
+									${user_count},
+									${day_user_count},
+									${week_user_count},
+									${month_user_count}
+								)",
+								
+     "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_overview_analysis_dm_yyyymm (
+                                    `statis_date` int(9) NOT NULL,
+                                    `hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+                                    `app_plat_id` int(9) NOT NULL DEFAULT '0' COMMENT '应用类型ID',
+                                    `register_user_count` bigint(20) NOT NULL COMMENT '注册用户数',
+                                    `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+                                    `signin_times_count` bigint(20) NOT NULL COMMENT '登录次数',
+                                    `next_remains_count` bigint(20) NOT NULL COMMENT '次日留存用户',
+                                    INDEX `idx_st_overview_analysis_ds_yyyymm` (`statis_date`,`hour`,`app_plat_id`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	 "drop_tmp_ds_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp_spap.tmp_st_overview_analysis_yyyymmdd",
+	
+	 "create_tmp_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp_spap.tmp_st_overview_analysis_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` INT (9) NOT NULL DEFAULT '0' COMMENT '小时',
+                                    `app_plat_id` int(9) NOT NULL DEFAULT '0' COMMENT '应用类型ID',
+								    `register_user_count` bigint(20) NOT NULL COMMENT '注册用户数',
+								    `signin_user_count` bigint(20) NOT NULL COMMENT '登录用户数',
+								    `signin_times_count` bigint(20) NOT NULL COMMENT '登录次数',
+								    `next_remains_count` bigint(20) NOT NULL COMMENT '次日留存用户',
+								    INDEX `idx_st_overview_analysis_ds_yyyymmdd` (`statis_date`,`hour`,`app_plat_id`)
+							    ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+									 
+	 "insertTmpDsSql": "INSERT INTO bi_tmp_spap.tmp_st_overview_analysis_yyyymmdd (
+									`statis_date`,
+									`hour`,
+									`app_plat_id`,
+									`register_user_count`,
+									`signin_user_count`,
+									`signin_times_count`,
+									`next_remains_count`
+								)",
+						
+	 "selectTmpNewUserDsSql": "SELECT
+									ifnull(`statis_date` ,- 1) AS statis_date,
+									ifnull(`hour` ,- 1) AS hour,
+									ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+									COUNT(distinct user_id  ) AS 'register_user_count',
+									0 AS signin_user_count,
+									0 AS signin_times_count,
+									0 AS next_remains_count
+								FROM
+									bi_dw_spap.dw_new_user_all_store
+								WHERE
+									1 = 1
+								AND `new_user`= ${is_new}
+								AND `statis_date` = ${store_id}",
+						
+	 "selectTmpSignUserDsSql": "SELECT
+									ifnull(`statis_date` ,- 1) AS statis_date,
+									ifnull(`hour` ,- 1) AS hour,
+									ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+									0 AS 'register_user_count',
+									count(DISTINCT user_id) AS signin_user_count,
+									sum(`visit_count`) AS signin_times_count,
+									0 AS  next_remains_count
+								FROM
+									bi_dw_spap.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+								
+	  "selectTmpSignUserDsSql": "SELECT
+                                    ifnull(`statis_date` ,- 1) AS statis_date,
+                                    ifnull(`hour` ,- 1) AS hour,
+                                    ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                    0 AS 'register_user_count',
+                                    count(DISTINCT user_id) AS signin_user_count,
+                                    sum(`visit_count`) AS signin_times_count,
+                                    0 AS  next_remains_count
+                                FROM
+                                    bi_dw_spap.dw_login_log_all_store
+                                WHERE
+                                    1 = 1
+                                AND `statis_date` = ${store_id}",
+								
+	 "selectTmpRemainsUserDsSql": "SELECT
+                                    ifnull(`statis_date` ,- 1) AS statis_date,
+                                    ifnull(`hour` ,- 1) AS hour,
+                                    ifnull(`app_plat_id` ,- 1) AS app_plat_id,
+                                    0 AS 'register_user_count',
+                                    0 AS signin_user_count,
+                                    0 AS signin_times_count,
+                                    count(DISTINCT user_id) AS  next_remains_count
+                                FROM
+                                    (
+                                        SELECT
+                                            s.statis_date,
+                                            s.`hour`,
+                                            s.app_plat_id,
+                                            s.app_version_id,
+                                            s.user_id
+                                        FROM
+                                            bi_tmp_spap.tmp_st_active_user_retain_ds_all_store t
+                                        LEFT JOIN bi_dw_spap.dw_login_log_all_store s ON t.user_id = s.user_id
+                                        WHERE
+                                            1 = 1
+                                        AND t.statis_date = ${retains_day}
+                                        AND s.statis_date = ${yesterday}
+                                        GROUP BY
+                                            s.statis_date,
+                                            s.`hour`,
+                                            s.app_plat_id,
+                                            s.app_version_id,
+                                            s.user_id
+                                    ) a",
+						
+	"insertDmSelectSql": "INSERT INTO bi_st_spap.st_overview_analysis_dm_yyyymm (
+									`statis_date`,
+									`hour`,
+									`app_plat_id`,
+									`register_user_count`,
+									`signin_user_count`,
+									`signin_times_count`,
+									`next_remains_count`
+								) SELECT
+									`statis_date`,
+									`hour`,
+									`app_plat_id`,
+									sum(`register_user_count`) AS 'register_user_count',
+									sum(`signin_user_count`) AS signin_user_count,
+									sum(`signin_times_count`) AS signin_times_count,
+									sum(`next_remains_count`) AS next_remains_count
+								FROM
+									bi_tmp_spap.tmp_st_overview_analysis_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id} 
+								GROUP BY
+									`statis_date`,
+									`hour`,
+									`app_plat_id`",
+	"delete_yes_dmDate":"delete from bi_st_spap.st_overview_analysis_dm_yyyymm where 1=1 AND statis_date = ${statisDate}",
+	"delete_yes_mdtDate":"delete from bi_st_spap.st_overview_analysis_dt_yyyymm where 1=1 AND statis_date = ${statisDate}"
+									
+}

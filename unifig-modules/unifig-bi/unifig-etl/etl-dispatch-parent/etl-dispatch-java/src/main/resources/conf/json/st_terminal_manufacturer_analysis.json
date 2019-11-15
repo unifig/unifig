@@ -1,0 +1,416 @@
+{
+     "create_manufacturer_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT '坐标应用的版本',
+								    
+								    `manufacturer_id` int(10) NOT NULL COMMENT '终端厂商维表',
+								    `manufacturer_model_id` int(10) NOT NULL COMMENT '设备型号维表',
+								    
+								    `time_slice` smallint(6) NOT NULL DEFAULT '1',
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_st_terminal_analysis_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`manufacturer_id`,`manufacturer_model_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "drop_manufacturer_ds_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp.tmp_st_terminal_manufacturer_analysis_ds_yyyymmdd",
+	 
+	 "create_manufacturer_ds_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT '坐标应用的版本',
+								    
+								    `manufacturer_id` int(10) NOT NULL COMMENT '终端厂商维表',
+								    `manufacturer_model_id` int(10) NOT NULL COMMENT '设备型号维表',
+								    
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_terminal_analysis_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`manufacturer_id`,`manufacturer_model_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "insertManufacturerDsTmpSql": "INSERT INTO bi_tmp.tmp_st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    )",
+                                
+	 "selectManufacturerDsTmpNewUserSql": "SELECT
+									ifnull(`statis_date` ,- 1) as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									
+									ifnull(`manufacturer_id` ,- 1) as manufacturer_id,
+									ifnull(`manufacturer_model_id` ,- 1) as manufacturer_model_id,
+									
+									count(DISTINCT `user_id`) as new_user_count,
+									0 as signin_times_count,
+									0 as signin_user_count
+								FROM
+									bi_dw.dw_new_user_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								AND `new_user`= ${is_new} ",
+								
+	 "selectManufacturerDsTmpAllUserSql": " SELECT
+									ifnull(`statis_date` ,- 1) as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									
+									ifnull(`manufacturer_id` ,- 1) as manufacturer_id,
+									ifnull(`manufacturer_model_id` ,- 1) as manufacturer_model_id,
+									
+									0 as new_user_count,
+									sum(`visit_count`) as signin_times_count,
+									count(DISTINCT `user_id`)  as signin_user_count
+								FROM
+									bi_dw.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+								
+	"insertManufacturerDsDistinctSql": "INSERT INTO bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_tmp.tmp_st_terminal_manufacturer_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`",
+									
+	"insertManufacturerDsWaiteSql": "INSERT INTO bi_tmp.tmp_st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+								
+	 "insertManufacturerDsSelectSql": "INSERT INTO bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									sum(`new_user_count`) as new_user_count,
+									sum(`signin_times_count`) as signin_times_count,
+									sum(`signin_user_count`) as signin_user_count
+								FROM
+									bi_tmp.tmp_st_terminal_manufacturer_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`
+									",
+																	
+	 "insertDtTimeSlice":"7,30,60",
+	 
+	 "drop_manufacturer_dt_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp.tmp_st_terminal_manufacturer_analysis_dt_yyyymmdd",
+	
+	 "create_manufacturer_dt_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_terminal_manufacturer_analysis_dt_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT '坐标应用的版本',
+								    
+								    `manufacturer_id` int(10) NOT NULL COMMENT '终端厂商维表',
+								    `manufacturer_model_id` int(10) NOT NULL COMMENT '设备型号维表',
+								    
+								    `time_slice` SMALLINT (6) NOT NULL,
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_terminal_analysis_dt_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`manufacturer_id`,`manufacturer_model_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "insertManufacturerDtTmpSql": "INSERT INTO bi_tmp.tmp_st_terminal_manufacturer_analysis_dt_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    )",
+							    
+	 "selectManufacturerDtTmpNewUserSql": " SELECT
+									${statis_date} as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									
+									ifnull(`manufacturer_id` ,- 1) as manufacturer_id,
+									ifnull(`manufacturer_model_id` ,- 1) as manufacturer_model_id,
+									
+									${time_slice} AS time_slice,
+									count(DISTINCT `user_id`) as new_user_count,
+									0 as signin_times_count,
+									0 as signin_user_count
+								FROM
+									bi_dw.dw_new_user_all_store
+								WHERE
+									1 = 1
+								AND `statis_date`>= ${min_id}
+						        AND `statis_date`<= ${max_id}
+						        AND `new_user`= ${is_new} ",
+						        
+	 "selectManufacturerDtTmpAllUserSql": " SELECT
+									${statis_date} as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									
+									ifnull(`manufacturer_id` ,- 1) as manufacturer_id,
+									ifnull(`manufacturer_model_id` ,- 1) as manufacturer_model_id,
+									
+									${time_slice} AS time_slice,
+									0 as new_user_count,
+									sum(`visit_count`) as signin_times_count,
+									count(DISTINCT `user_id`)  as signin_user_count
+								FROM
+									bi_dw.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date`>= ${min_id}
+						        AND `statis_date`<= ${max_id}",
+						        
+	 "insertManufacturerDtDistinctSql": "INSERT INTO bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_tmp.tmp_st_terminal_manufacturer_analysis_dt_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`",
+									
+	 "insertManufacturerDtWaiteSql": "INSERT INTO bi_tmp.tmp_st_terminal_manufacturer_analysis_dt_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								AND `time_slice` != 1",
+								
+     "insertManufacturerDtSelectSql": "INSERT INTO bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`,
+									sum(`new_user_count`) as new_user_count,
+									sum(`signin_times_count`) as signin_times_count,
+									sum(`signin_user_count`) as signin_user_count
+								FROM
+									bi_tmp.tmp_st_terminal_manufacturer_analysis_dt_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+								    
+									`manufacturer_id`,
+									`manufacturer_model_id`,
+									
+									`time_slice`",
+	
+	"delete_manufacturer_yes_date":"delete from bi_st.st_terminal_manufacturer_analysis_ds_yyyymmdd where 1=1 AND statis_date = ${statisDate}"							
+}

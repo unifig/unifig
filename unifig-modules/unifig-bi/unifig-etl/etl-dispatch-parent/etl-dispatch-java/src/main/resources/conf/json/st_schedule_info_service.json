@@ -1,0 +1,142 @@
+{
+    "create_dm_yyyymm":"CREATE TABLE IF NOT EXISTS bi_st.st_schedule_info_dm_yyyymm (
+                              `statis_date` int(6) DEFAULT NULL COMMENT '插入时间',
+                              `hour` int(4) DEFAULT NULL COMMENT '小时',
+                              `app_plat_id` int(4) DEFAULT NULL COMMENT '平台id',
+                              `app_id` int(4) DEFAULT NULL COMMENT '应用id',
+                              `app_version_id` int(4) DEFAULT NULL COMMENT '版本id',
+                              `add_num` int(6) DEFAULT NULL COMMENT '创建日程数',
+                              `user_num` int(6) DEFAULT NULL COMMENT '创建日程人数',
+                              `complete_num` int(6) DEFAULT NULL COMMENT '完成日程数',
+                              `share_num` int(6) DEFAULT NULL COMMENT '分享日程数',
+                              KEY `idx_st_schedule_info_dm_yyyymm` (`statis_date`,`hour`,`app_plat_id`,`app_id`,`app_version_id`) USING BTREE
+                            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                
+    "create_tmp_yyyymmdd":"CREATE TABLE IF NOT EXISTS bi_tmp.tmp_schedule_info_ds_yyyymmdd (
+                                  `statis_date` int(6) DEFAULT NULL COMMENT '插入时间',
+                                  `hour` int(4) DEFAULT NULL COMMENT '小时',
+                                  `app_plat_id` int(4) DEFAULT NULL COMMENT '平台id',
+                                  `app_id` int(4) DEFAULT NULL COMMENT '应用id',
+                                  `app_version_id` int(4) DEFAULT NULL COMMENT '版本id',
+                                  `add_num` int(6) DEFAULT NULL COMMENT '创建日程数',
+                                  `user_num` int(6) DEFAULT NULL COMMENT '创建日程人数',
+                                  `complete_num` int(6) DEFAULT NULL COMMENT '完成日程数',
+                                  `share_num` int(6) DEFAULT NULL COMMENT '分享日程数',
+                                  KEY `idx_tmp_schedule_info_ds_yyyymmdd` (`statis_date`,`hour`,`app_plat_id`,`app_id`,`app_version_id`) USING BTREE
+                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+                                
+    "insertTmpDsSql":"INSERT into bi_tmp.tmp_schedule_info_ds_yyyymmdd (
+                                        `statis_date`,
+                                        `hour`,
+                                        `app_plat_id`,
+                                        `app_id`,
+                                        `app_version_id`,
+                                        `add_num`,
+                                        `user_num`,
+                                        `complete_num`,
+                                        `share_num`
+                                        ) ",
+                                        
+    "selectAddDsSql":"SELECT
+                            ifnull(`statis_date` ,- 1) as statis_date,
+                            ifnull(`hour` ,- 1) as hour,
+                            ifnull(`app_plat_id` ,- 1) as app_plat_id,
+                            IFNULL(`app_id`,-1) as app_id,
+                            ifnull(`app_version_id` ,- 1) as app_version_id,
+                            SUM(`schedule_count`) as `add_num`,
+                            0 as `user_num`,
+                            0 as `complete_num` ,
+                            0 as `share_num` 
+                        FROM
+                            bi_dw.dw_schedule_dm_yyyymm
+                        WHERE
+                            statis_date = ${statis_date}
+                            and
+                            action = 1",
+                            
+     "selectUserDsSql":"SELECT
+                            ifnull(`statis_date` ,- 1) as statis_date,
+                            ifnull(`hour` ,- 1) as hour,
+                            ifnull(`app_plat_id` ,- 1) as app_plat_id,
+                            IFNULL(`app_id`,-1) as app_id,
+                            ifnull(`app_version_id` ,- 1) as app_version_id,
+                            0 as `add_num`,
+                            COUNT(DISTINCT `user_id`) as `user_num`,
+                            0 as `complete_num` ,
+                            0 as `share_num` 
+                        FROM
+                            bi_dw.dw_schedule_dm_yyyymm 
+                        WHERE
+                            statis_date = ${statis_date}
+                            and
+                            action = 1",
+    
+    "selectCompleteDsSql":"SELECT
+                                ifnull(`statis_date` ,- 1) as statis_date,
+                                ifnull(`hour` ,- 1) as hour,
+                                ifnull(`app_plat_id` ,- 1) as app_plat_id,
+                                IFNULL(`app_id`,-1) as app_id,
+                                ifnull(`app_version_id` ,- 1) as app_version_id,
+                                0 as `add_num`,
+                                0 as `user_num`,
+                                SUM(`schedule_count`) as `complete_num` ,
+                                0 as `share_num` 
+                            FROM
+                               bi_dw.dw_schedule_dm_yyyymm
+                            WHERE
+                                statis_date = ${statis_date}
+                                and
+                                action = 3",
+    
+    "selectShareDsSql":"SELECT
+                            ifnull(`statis_date` ,- 1) as statis_date,
+                            ifnull(`hour` ,- 1) as hour,
+                            ifnull(`app_plat_id` ,- 1) as app_plat_id,
+                            IFNULL(`app_id`,-1) as app_id,
+                            ifnull(`app_version_id` ,- 1) as app_version_id,
+                            0 as `add_num`,
+                            0 as `user_num`,
+                            0 as `complete_num` ,
+                            SUM(`schedule_count`) as `share_num` 
+                        FROM
+                           bi_dw.dw_schedule_dm_yyyymm
+                        WHERE
+                            statis_date = ${statis_date}
+                            and
+                            action = 4",
+                                        
+    "insertDmSelectSql":"insert into bi_st.st_schedule_info_dm_yyyymm(
+                                    `statis_date`,
+                                    `hour` ,
+                                    `app_plat_id` ,
+                                    `app_id` ,
+                                    `app_version_id` ,
+                                    `add_num` ,
+                                    `user_num` ,
+                                    `complete_num` ,
+                                    `share_num` 
+                            ) SELECT 
+                                `statis_date`,
+                                `hour`,
+                                `app_plat_id`,
+                                `app_id`,
+                                `app_version_id`, 
+                                sum(add_num) as `add_num`,
+                                sum(user_num) as user_num ,
+                                sum(complete_num) as `complete_num`,
+                                sum(share_num) as `share_num`
+                            from 
+                                bi_tmp.tmp_schedule_info_ds_yyyymmdd 
+                            WHERE 
+                                statis_date = ${statis_date}
+                            GROUP BY
+                                `statis_date`,
+                                `hour` ,
+                                `app_plat_id` ,
+                                `app_id` ,
+                                `app_version_id`",
+                        
+    "drop_tmp_ds_yyyymmdd":"drop TABLE IF EXISTS  bi_tmp.tmp_schedule_info_ds_yyyymmdd",
+    
+    "delete_yes_date":"delete from bi_st.st_schedule_info_dm_yyyymm where 1=1 AND statis_date = ${statisDate}",
+}

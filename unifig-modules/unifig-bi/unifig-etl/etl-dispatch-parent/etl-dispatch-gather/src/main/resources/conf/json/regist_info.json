@@ -1,0 +1,66 @@
+{
+    "create_regist_info_ds_log":"CREATE TABLE IF NOT EXISTS bi_interface.zuobiao_register_log (
+                                        `user_id` BIGINT ( 13 ) NOT NULL COMMENT '用户id',
+                                        `master` VARCHAR ( 32 ) DEFAULT NULL,
+                                        `timestamp` BIGINT ( 32 ) DEFAULT NULL COMMENT '发送时间',
+                                        `channel` INT ( 10 ) DEFAULT NULL COMMENT '坐标渠道',
+                                        `app_version` VARCHAR ( 32 ) DEFAULT NULL COMMENT '坐标版本',
+                                        `os_version` VARCHAR ( 32 ) DEFAULT NULL COMMENT '操作系统版本号',
+                                        `device_vendor` VARCHAR ( 32 ) DEFAULT NULL COMMENT '终端设备厂商',
+                                        `action` VARCHAR ( 32 ) DEFAULT NULL COMMENT '消息动作',
+                                        `device_model` VARCHAR ( 32 ) DEFAULT NULL COMMENT '终端设备型号',
+                                        `app_device_type` VARCHAR ( 32 ) DEFAULT NULL COMMENT '终端设备分类（pc、web、android、ios、macos、windows)',
+                                        `os_name` VARCHAR ( 32 ) DEFAULT NULL COMMENT '操作系统名称',
+                                        `year` INT ( 10 ) DEFAULT NULL COMMENT '年',
+                                        `month` INT ( 10 ) DEFAULT NULL COMMENT '月',
+                                        `day` INT ( 10 ) DEFAULT NULL COMMENT '日',
+                                        `hour` INT ( 10 ) DEFAULT NULL COMMENT '小时',
+                                        `store_id` INT ( 10 ) DEFAULT NULL COMMENT '分区' 
+                                        ) ENGINE = INNODB DEFAULT CHARSET = utf8;",
+    
+    "select_source_sql":"SELECT
+                            `id`,
+                            `master`,
+                            `action`,
+                            `user_id`,
+                            `timestamp`,
+                            `app_device_type`,
+                            `app_version`,
+                            `channel`,
+                            `device_vendor`,
+                            `device_model`,
+                            `os_version`,
+                            `os_name` 
+                        FROM
+                            zuobiao_log.register_log_yyyy_mm
+                        WHERE
+                            1 = 1 
+                            AND TIMESTAMP > ${startTime} 
+                            AND TIMESTAMP < ${endTime} 
+                            LIMIT ${offset},
+                            ${rows}",
+    
+    "insert_regist_info_ds_log":"INSERT INTO bi_interface.zuobiao_register_log (
+                                        `user_id`,
+                                        `master`,
+                                        `timestamp`,
+                                        `channel`,
+                                        `app_version`,
+                                        `os_version`,
+                                        `device_vendor`,
+                                        `action`,
+                                        `device_model`,
+                                        `app_device_type`,
+                                        `os_name`,
+                                        `year`,
+                                        `month`,
+                                        `day`,
+                                        `hour`,
+                                        `store_id` 
+                                        )
+                                        VALUES
+                                            ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )",
+
+
+    "delete_yes_date":"delete from bi_interface.zuobiao_register_log where store_id = ${statisDate}"   
+}

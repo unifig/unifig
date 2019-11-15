@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="etl.dispatch.boot.dao.SignInfoTasksMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="etl.dispatch.boot.entity.SignInfoTasks">
+		<id column="pk_id" property="pkId" />
+		<result column="classify" property="classify" />
+		<result column="task_id" property="taskId" />
+		<result column="task_name" property="taskName" />
+		<result column="script_path" property="scriptPath" />
+		<result column="time_sign" property="timeSign" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="log_time" property="logTime" />
+		<result column="is_success" property="isSuccess" />
+		<result column="message" property="message" />
+	</resultMap>
+
+</mapper>

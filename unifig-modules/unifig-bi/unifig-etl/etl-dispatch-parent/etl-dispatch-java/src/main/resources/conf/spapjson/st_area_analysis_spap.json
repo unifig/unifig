@@ -1,0 +1,412 @@
+{
+     "create_ds_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_area_analysis_ds_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT 'spap应用的版本',
+								    `country_id` int(10) NOT NULL COMMENT '国家维表',
+								    `region_id` smallint(8) NOT NULL COMMENT '省份维表',
+								    `city_id` int(10) NOT NULL COMMENT '地市维表',
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_st_area_analysis_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`country_id`,`region_id`,`city_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+       "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_area_analysis_dm_yyyymm (
+                                    `statis_date` int(9) NOT NULL,
+                                    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                    `app_version_id` int(10) NOT NULL COMMENT 'spap应用的版本',
+                                    `country_id` int(10) NOT NULL COMMENT '国家维表',
+                                    `region_id` smallint(8) NOT NULL COMMENT '省份维表',
+                                    `city_id` int(10) NOT NULL COMMENT '地市维表',
+                                    `time_slice` smallint(6) NOT NULL DEFAULT '1',
+                                    `new_user_count` bigint(20) NOT NULL,
+                                    `signin_times_count` bigint(20) NOT NULL,
+                                    `signin_user_count` bigint(20) NOT NULL,
+                                    INDEX `idx_st_area_analysis_dm_yyyymm` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`country_id`,`region_id`,`city_id`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "drop_ds_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp_spap.tmp_st_area_analysis_ds_yyyymmdd",
+	  
+	 "create_ds_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp_spap.tmp_st_area_analysis_ds_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT 'spap应用的版本',
+								    `country_id` int(10) NOT NULL COMMENT '国家维表',
+								    `region_id` int(10) NOT NULL COMMENT '省份维表',
+								    `city_id` int(10) NOT NULL COMMENT '地市维表',
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_area_analysis_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`country_id`,`region_id`,`city_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "insertDsTmpSql": "INSERT INTO bi_tmp_spap.tmp_st_area_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    )",
+	 "selectDsTmpNewUserSql": "SELECT
+									ifnull(`statis_date` ,- 1) as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									ifnull(channel,-1) channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									ifnull(`country_id` ,- 1) as country_id,
+									ifnull(`region_id` ,- 1) as region_id,
+									ifnull(`city_id` ,- 1) as city_id,
+									count(DISTINCT `user_id`) as new_user_count,
+									0 as signin_times_count,
+									0 as signin_user_count
+								FROM
+									bi_dw_spap.dw_new_user_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								AND `new_user`= ${is_new} ",
+	 "selectDsTmpAllUserSql": " SELECT
+									ifnull(`statis_date` ,- 1) as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									ifnull(channel,-1) channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									ifnull(`country_id` ,- 1) as country_id,
+									ifnull(`region_id` ,- 1) as region_id,
+									ifnull(`city_id` ,- 1) as city_id,
+									0 as new_user_count,
+									sum(`visit_count`) as signin_times_count,
+									count(DISTINCT `user_id`)  as signin_user_count
+								FROM
+									bi_dw_spap.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+	"insertDmDistinctSql": "INSERT INTO bi_st_spap.st_area_analysis_dm_yyyymm (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_tmp_spap.tmp_st_area_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`",
+	"insertDsWaiteSql": "INSERT INTO bi_tmp_spap.tmp_st_area_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_st_spap.st_area_analysis_dm_yyyymm
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+	 "insertDsSelectSql": "INSERT INTO bi_st_spap.st_area_analysis_dm_yyyymm (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									sum(`new_user_count`) as new_user_count,
+									sum(`signin_times_count`) as signin_times_count,
+									sum(`signin_user_count`) as signin_user_count
+								FROM
+									bi_tmp_spap.tmp_st_area_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`",
+																	
+	 "insertDtTimeSlice":"7,30,60",
+	 
+	 "create_dt_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_st_spap.st_area_analysis_dt_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT 'spap应用的版本',
+								    `country_id` int(10) NOT NULL COMMENT '国家维表',
+								    `region_id` int(10) NOT NULL COMMENT '省份维表',
+								    `city_id` int(10) NOT NULL COMMENT '地市维表',
+								    `time_slice` SMALLINT (6) NOT NULL,
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_st_area_analysis_dt_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`country_id`,`region_id`,`city_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "drop_dt_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp_spap.tmp_st_area_analysis_dt_yyyymmdd",
+	  
+	 "create_dt_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp_spap.tmp_st_area_analysis_dt_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+								    `hour` int(10) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+								    `channel_id` int(10) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+								    `app_plat_id` int(10) NOT NULL COMMENT '安卓，IOS，PC，Web',
+								    `app_version_id` int(10) NOT NULL COMMENT 'spap应用的版本',
+								    `country_id` int(10) NOT NULL COMMENT '国家维表',
+								    `region_id` int(10) NOT NULL COMMENT '省份维表',
+								    `city_id` int(10) NOT NULL COMMENT '地市维表',
+								    `time_slice` SMALLINT (6) NOT NULL,
+								    `new_user_count` bigint(20) NOT NULL,
+								    `signin_times_count` bigint(20) NOT NULL,
+								    `signin_user_count` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_area_analysis_dt_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`country_id`,`region_id`,`city_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "insertDtTmpSql": "INSERT INTO bi_tmp_spap.tmp_st_area_analysis_dt_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    )",
+	 "selectDtTmpNewUserSql": " SELECT
+									${statis_date} as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									ifnull(`country_id` ,- 1) as country_id,
+									ifnull(`region_id` ,- 1) as region_id,
+									ifnull(`city_id` ,- 1) as city_id,
+									${time_slice} AS time_slice,
+									count(DISTINCT `user_id`) as new_user_count,
+									0 as signin_times_count,
+									0 as signin_user_count
+								FROM
+									bi_dw_spap.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date`>= ${min_id}
+						        AND `statis_date`<= ${max_id}
+						        AND `new_user`= ${is_new} ",
+	 "selectDtTmpAllUserSql": " SELECT
+									${statis_date} as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									ifnull(`country_id` ,- 1) as country_id,
+									ifnull(`region_id` ,- 1) as region_id,
+									ifnull(`city_id` ,- 1) as city_id,
+									${time_slice} AS time_slice,
+									0 as new_user_count,
+									sum(`visit_count`) as signin_times_count,
+									count(DISTINCT `user_id`)  as signin_user_count
+								FROM
+									bi_dw_spap.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date`>= ${min_id}
+						        AND `statis_date`<= ${max_id}",
+						        
+	 "insertDtDistinctSql": "INSERT INTO bi_st_spap.st_area_analysis_dm_yyyymm (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_tmp_spap.tmp_st_area_analysis_dt_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`",
+	 "insertDtWaiteSql": "INSERT INTO bi_tmp_spap.tmp_st_area_analysis_dt_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+								FROM
+									bi_st_spap.st_area_analysis_dm_yyyymm
+								WHERE
+									1 = 1
+								AND `time_slice` != 1
+								AND `statis_date` = ${store_id}",
+     "insertDtSelectSql": "INSERT INTO bi_st_spap.st_area_analysis_dm_yyyymm (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									`new_user_count`,
+									`signin_times_count`,
+									`signin_user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`,
+									sum(`new_user_count`) as new_user_count,
+									sum(`signin_times_count`) as signin_times_count,
+									sum(`signin_user_count`) as signin_user_count
+								FROM
+									bi_tmp_spap.tmp_st_area_analysis_dt_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`country_id`,
+									`region_id`,
+									`city_id`,
+									`time_slice`",
+	 "delete_yes_date":"delete from bi_st_spap.st_area_analysis_dm_yyyymm where 1=1 AND statis_date = ${statisDate}"
+	 
+}

@@ -1,0 +1,194 @@
+{
+     "create_dm_yyyymm": "CREATE TABLE IF NOT EXISTS bi_st.st_user_analysis_dm_yyyymm (
+                                    `statis_date` int(9) NOT NULL,
+                                    `hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+                                    `channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+                                    `app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+                                    `app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+                                    `sex_id` smallint(4) NOT NULL COMMENT '性别维表',
+                                    `age` smallint(4) NOT NULL,
+                                    `industry_id` smallint(4) NOT NULL COMMENT '行业维表',
+                                    `time_slice` smallint(6) NOT NULL DEFAULT '1',
+                                    `user_count` bigint(20) NOT NULL,
+                                    INDEX `idx_st_user_analysis_dm_yyyymm` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`sex_id`,`age`,`industry_id`)
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "drop_ds_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp.tmp_st_user_analysis_ds_yyyymmdd",
+	  
+	 "create_ds_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_user_analysis_ds_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+									`hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+									`channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+									`app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+									`app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+									`sex_id` smallint(4) NOT NULL COMMENT '性别维表',
+									`age` smallint(4) NOT NULL,
+									`industry_id` smallint(4) NOT NULL COMMENT '行业维表',
+									`user_count` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_user_analysis_ds_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`sex_id`,`age`,`industry_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "insertDsTmpSql": "INSERT INTO bi_tmp.tmp_st_user_analysis_ds_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`user_count`
+							    )",
+	 "selectDsTmpSql": "   SELECT
+									ifnull(`statis_date` ,- 1) as statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									ifnull(`sex_id` ,- 1) as sex_id,
+									ifnull(`age` ,- 1) as age,
+									ifnull(`industry_id` ,- 1) as industry_id,
+									count(DISTINCT `user_id`) as user_count
+								FROM
+									bi_dw.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}",
+								
+	"insertDmDistinctSql": "INSERT INTO bi_st.st_user_analysis_dm_yyyymm (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`user_count`
+								FROM
+									bi_tmp.tmp_st_user_analysis_ds_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`user_count`",
+									
+	 "insertDtTimeSlice":"7,30,60",
+	 
+	 "create_dt_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_st.st_user_analysis_dt_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+									`hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+									`channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+									`app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+									`app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+									`sex_id` smallint(4) NOT NULL COMMENT '性别维表',
+									`age` smallint(4) NOT NULL,
+									`industry_id` smallint(4) NOT NULL COMMENT '行业维表',
+									`time_slice` SMALLINT (6) NOT NULL,
+									`user_count` bigint(20) NOT NULL,
+								    INDEX `idx_st_user_analysis_dt_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`sex_id`,`age`,`industry_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+						        
+	 "drop_dt_tmp_yyyymmdd": "drop TABLE IF EXISTS  bi_tmp.tmp_st_user_analysis_dt_yyyymmdd",
+	  
+	 "create_dt_tmp_yyyymmdd": "CREATE TABLE IF NOT EXISTS bi_tmp.tmp_st_user_analysis_dt_yyyymmdd (
+								    `statis_date` int(9) NOT NULL,
+									`hour` smallint(4) NOT NULL COMMENT '小时为-1，则统计的为天，小时存在具体到天的小时统计',
+									`channel_id` smallint(4) NOT NULL COMMENT 'AppStore、同步推、91助手 等，目前渠道为-1（未知）',
+									`app_plat_id` tinyint(4) NOT NULL COMMENT '安卓，IOS，PC，Web',
+									`app_version_id` smallint(4) NOT NULL COMMENT '坐标应用的版本',
+									`sex_id` smallint(4) NOT NULL COMMENT '性别维表',
+									`age` smallint(4) NOT NULL,
+									`industry_id` smallint(4) NOT NULL COMMENT '行业维表',
+									`time_slice` SMALLINT (6) NOT NULL,
+									`user_count` bigint(20) NOT NULL,
+								    INDEX `idx_tmp_st_user_analysis_dt_yyyymmdd` (`statis_date`,`hour`,`channel_id`,`app_plat_id`,`app_version_id`,`sex_id`,`age`,`industry_id`)
+						        ) ENGINE=MyISAM DEFAULT CHARSET=utf8",
+						        
+	 "insertDtTmpSql": "INSERT INTO bi_tmp.tmp_st_user_analysis_dt_yyyymmdd (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`time_slice`,
+									`user_count`
+							    )",
+	 "selectDtTmpSql": "   SELECT
+									${statis_date} AS statis_date,
+									ifnull(`hour` ,- 1) as HOUR,
+									- 1 as channel_id,
+									ifnull(`app_plat_id` ,- 1) as app_plat_id,
+									ifnull(`app_version_id` ,- 1) as app_version_id,
+									ifnull(`sex_id` ,- 1) as sex_id,
+									ifnull(`age` ,- 1) as age,
+									ifnull(`industry_id` ,- 1) as industry_id,
+									${time_slice} AS time_slice,
+									count(DISTINCT `user_id`) as user_count
+								FROM
+									bi_dw.dw_login_log_all_store
+								WHERE
+									1 = 1
+								AND `statis_date`>= ${min_id}
+						        AND `statis_date`<= ${max_id}",
+	 "insertMDtDistinctSql": "INSERT INTO bi_st.st_user_analysis_dm_yyyymm (
+								    `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`time_slice`,
+									`user_count`
+							    ) SELECT 
+							        `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`time_slice`,
+									`user_count`
+								FROM
+									bi_tmp.tmp_st_user_analysis_dt_yyyymmdd
+								WHERE
+									1 = 1
+								AND `statis_date` = ${store_id}
+								group by `statis_date`,
+									`hour`,
+									`channel_id`,
+									`app_plat_id`,
+								    `app_version_id`,
+									`sex_id`,
+									`age`,
+									`industry_id`,
+									`time_slice`,
+									`user_count`",
+	 "delete_yes_date":"delete from bi_st.st_user_analysis_dm_yyyymm where 1=1 AND statis_date = ${statisDate}"
+									
+}

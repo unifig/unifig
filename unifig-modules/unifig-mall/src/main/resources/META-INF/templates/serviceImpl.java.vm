@@ -1,0 +1,90 @@
+/**
+ * FileName: $!{table.comment}
+ * Author:   ${author}
+ * Date:     ${date}
+ * Description: $!{table.comment}
+ * History:
+ * <author>          <time>          <version>          <desc>
+ */
+package ${package.ServiceImpl};
+import com.baomidou.mybatisplus.plugins.Page;
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import com.unifig.result.ResultData;
+
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+	private Logger logger=LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private ${table.mapperName} ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)};
+
+    /**
+    * 查询分页数据
+     */
+    @Override
+    public ResultData<${entity}> findListByPage(int pageNum,int pageSize){
+		Integer count = ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)}.selectCount(null);
+		List<${entity}> ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}List = ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)}.selectPage(new Page<${entity}>(pageNum, pageSize), null);
+		return ResultData.result(true).setData(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}List).setCount(count);
+    }
+
+
+    /**
+    * 根据id查询
+    */
+    @Override
+    public ResultData<${entity}> getById(String id){
+        ${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)} = ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)}.selectById(id);
+		return ResultData.result(true).setData(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+    }
+
+    /**
+    * 新增
+    */
+    @Override
+    public ResultData add(${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}){
+        ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)}.insert(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+		return ResultData.result(true).setMsg("新增成功");
+    }
+
+    /**
+    * 删除
+    */
+    @Override
+    public ResultData delete(List<String> ids){
+    	if(null!=ids&&ids.size()>0){
+		    for (String id : ids) {
+                ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)}.deleteById(id);
+		    }
+		    return ResultData.result(true).setMsg("删除成功");
+        }else{
+		    return ResultData.result(true).setMsg("删除失败,请检查ids是否为空!");
+        }
+    }
+
+    /**
+    * 修改
+     */
+    @Override
+    public ResultData update(${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}){
+    ${table.mapperName.substring(0,1).toLowerCase()}${table.mapperName.substring(1)}.updateById(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+		return ResultData.result(true).setMsg("修改成功");
+    }
+}
