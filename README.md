@@ -26,7 +26,7 @@ unifig
 ├    ├── unifig-organ -- 用户模块 
 └──  └── unifig-logistics -- 物流
 ```
-#### 项目图
+#### 后台管理
 
 ![后台商品](https://images.gitee.com/uploads/images/2019/1118/164121_99bb49f1_1070396.png "WechatIMG42793.png")
 
@@ -35,6 +35,8 @@ unifig
 ![后台广告](https://images.gitee.com/uploads/images/2019/1118/164218_beb8bcca_1070396.png "WechatIMG42800.png")
 
 ![后台权限](https://images.gitee.com/uploads/images/2019/1118/164237_129ccc1c_1070396.png "WechatIMG42801.png")
+
+#### 小程序
 
 ![小程序-首页商品](https://images.gitee.com/uploads/images/2019/1118/164837_64f56fdd_1070396.png "WechatIMG20346.png")
 
