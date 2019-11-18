@@ -26,19 +26,71 @@ unifig
 ├    ├── unifig-organ -- 用户模块 
 └──  └── unifig-logistics -- 物流
 ```
+#### 项目图
 
+![后台商品](https://images.gitee.com/uploads/images/2019/1118/164121_99bb49f1_1070396.png "WechatIMG42793.png")
 
-![后台](https://images.gitee.com/uploads/images/2019/1118/164121_99bb49f1_1070396.png "WechatIMG42793.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1118/164155_57da9faf_1070396.png "WechatIMG42795.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1118/164218_beb8bcca_1070396.png "WechatIMG42800.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1118/164237_129ccc1c_1070396.png "WechatIMG42801.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1118/164302_fddbbf89_1070396.png "WechatIMG20343.png")
-![我的](https://images.gitee.com/uploads/images/2019/1118/164750_531c0ab0_1070396.png "WechatIMG874.png")
-![购物车](https://images.gitee.com/uploads/images/2019/1118/164819_dc3a5f79_1070396.png "WechatIMG20345.png")
-![首页](https://images.gitee.com/uploads/images/2019/1118/164837_64f56fdd_1070396.png "WechatIMG20346.png")
+![后台订单](https://images.gitee.com/uploads/images/2019/1118/164155_57da9faf_1070396.png "WechatIMG42795.png")
+
+![后台广告](https://images.gitee.com/uploads/images/2019/1118/164218_beb8bcca_1070396.png "WechatIMG42800.png")
+
+![后台权限](https://images.gitee.com/uploads/images/2019/1118/164237_129ccc1c_1070396.png "WechatIMG42801.png")
+
+![小程序-首页商品](https://images.gitee.com/uploads/images/2019/1118/164837_64f56fdd_1070396.png "WechatIMG20346.png")
+
+![小程序-首页团购](https://images.gitee.com/uploads/images/2019/1118/164302_fddbbf89_1070396.png "WechatIMG20343.png")
+
+![小程序-我的](https://images.gitee.com/uploads/images/2019/1118/164750_531c0ab0_1070396.png "WechatIMG874.png")
+
+![小程序-购物车](https://images.gitee.com/uploads/images/2019/1118/164819_dc3a5f79_1070396.png "WechatIMG20345.png")
+
 #### 安装教程
 ```
-/doc/部署 
+详细 - /doc/部署 
+安装教程:
+
+1.克隆代码到本地: 
+
+​	后端服务:https://gitee.com/unifig/unifig.git
+
+​	配置文件服务:https://gitee.com/unifig/unifig-config-files.git
+
+2.修改/unifig-config-files/dev  中对应配置文件
+
+3.上传 unifig-config-files 至 [码云](https://gitee.com/) 或 [github ](https://github.com/)
+
+4.idea 导入 unifig项目
+
+5.修改unifig-config 模块配置文件
+
+![修改配置服务 git地址.png](https://upload.cc/i1/2019/11/13/I215zJ.png)
+
+
+spring.cloud.config.server.git.uri 项目git地址
+spring.cloud.config.server.git.username=账号
+spring.cloud.config.server.git.password=密码
+注意:此账号必须有unifig-config-files 项目权限
+
+6.修改unifig-organ模块小程序配置信息(同理修改unifig-mall)
+
+![UTOOLS1573614991704.png](https://upload.cc/i1/2019/11/13/k4q7XG.png)
+
+每个子项目都可以单独运行，都是打包成jar包后，通过使用内置jetty容器执行，有2种方式运行。
+
+1. 在IDEA里面直接运行Application.java的main函数。
+2. 另一种方式是执行`mvn clean package`命令后传到linux服务器上面，通过命令`java -Xms64m -Xmx1024m -jar xxx.jar`方式运行
+
+服务启动顺序
+
+1.unifig-rc
+
+2.unifig-config
+
+3.unifig-organ
+
+4.unifig-mall
+
+5.unifig-zuul
 ```
 #### 使用说明
 ```
