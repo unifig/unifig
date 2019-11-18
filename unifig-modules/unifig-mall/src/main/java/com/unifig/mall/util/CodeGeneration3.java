@@ -46,7 +46,7 @@ public class CodeGeneration3 {
         gc.setBaseResultMap(true);// XML ResultMap
         gc.setBaseColumnList(true);// XML columList
         // .setKotlin(true) 是否生成 kotlin 代码
-        gc.setAuthor("Zheng");
+        gc.setAuthor("alrfut");
 
         // 自定义文件命名，注意 %s 会自动填充表实体属性！
         // gc.setMapperName("%sDao");
@@ -70,9 +70,9 @@ public class CodeGeneration3 {
         });
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("Shixin_lx_2019");
+        dsc.setPassword("cmF0ZWw=");
         dsc.setUrl(
-                "jdbc:mysql://192.144.201.111:13306/unifig?useUnicode=true&characterEncoding=UTF-8");
+                "jdbc:mysql://192.144.201.111:13306/alrfut?useUnicode=true&characterEncoding=UTF-8");
         mpg.setDataSource(dsc);
 
         // 策略配置
@@ -80,7 +80,7 @@ public class CodeGeneration3 {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "cms_" });// 此处可以修改为您的表前缀,可传递多个
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"ums_member_sc"}); // 需要生成的表,可传递多个
+        strategy.setInclude(new String[]{"af_api_config"}); // 需要生成的表,可传递多个
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -104,7 +104,7 @@ public class CodeGeneration3 {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.unifig.organ");// 配置包路径
+        pc.setParent("com.alrfut");// 配置包路径
         pc.setController("controller");// 配置前端控制器包
         pc.setService("service");// 配置服务实现类包
         pc.setServiceImpl("service.impl");// 配置服务类包

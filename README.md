@@ -27,7 +27,7 @@ unifig
 └──  └── unifig-logistics -- 物流
 ```
 #### 后台管理
-[后台管理码云地址](https://gitee.com/unifig/unifig-admin)
+[后台管理-代码地址](https://gitee.com/unifig/unifig-admin)
 
 | ![后台商品](https://images.gitee.com/uploads/images/2019/1118/164121_99bb49f1_1070396.png "WechatIMG42793.png")|   ![后台订单](https://images.gitee.com/uploads/images/2019/1118/164155_57da9faf_1070396.png "WechatIMG42795.png")|
 | --- | --- |
