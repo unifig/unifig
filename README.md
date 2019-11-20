@@ -52,9 +52,9 @@ unifig
 
 1.克隆代码到本地: 
 
-​	后端服务:https://gitee.com/unifig/unifig.git
+​	后端服务:git clone https://gitee.com/unifig/unifig.git
 
-​	配置文件服务:https://gitee.com/unifig/unifig-config-files.git
+​	配置文件服务:git clone https://gitee.com/unifig/unifig-config-files.git
 
 2.修改/unifig-config-files/dev  中对应配置文件
 
@@ -73,8 +73,6 @@ spring.cloud.config.server.git.password=密码
 注意:此账号必须有unifig-config-files 项目权限
 
 6.修改unifig-organ模块小程序配置信息(同理修改unifig-mall)
-
-![UTOOLS1573614991704.png](https://upload.cc/i1/2019/11/13/k4q7XG.png)
 
 每个子项目都可以单独运行，都是打包成jar包后，通过使用内置jetty容器执行，有2种方式运行。
 
@@ -97,10 +95,18 @@ spring.cloud.config.server.git.password=密码
 #### 使用说明
 ```
 
-1,后台管理的前端项目会陆续开源
+1,后台管理的前端项目会陆续开源 （ 已开源 )
+1,配置文件项目会陆续开源 （ 已开源 ）
 2,微信小程序项目会陆续开源
 3,文档会陆续完善
 4,后续开发计划(优惠卷小程序支持,社区,活动小程序支持)
+5,做ai工具，微信小程序 类似 - 腾讯AI体验中心 
+
+```
+
+#### 组织成员
+```
+
 
 ```
 
