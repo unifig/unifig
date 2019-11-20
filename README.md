@@ -26,6 +26,9 @@ unifig
 ├    ├── unifig-organ -- 用户模块 
 └──  └── unifig-logistics -- 物流
 ```
+#### 配置文件
+[配置文件-代码地址](https://gitee.com/unifig/unifig-config-files.git)
+
 #### 后台管理
 [后台管理-代码地址](https://gitee.com/unifig/unifig-admin)
 
