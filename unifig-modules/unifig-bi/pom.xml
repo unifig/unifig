@@ -47,7 +47,7 @@
         <commons-beanutils.version>1.8.3</commons-beanutils.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <commons-collections.version>3.2.1</commons-collections.version>
-        <commons-fileupload.version>1.3</commons-fileupload.version>
+        <commons-fileupload.version>1.3.3</commons-fileupload.version>
         <commons-email.version>1.3.3</commons-email.version>
         <!-- javabean映射工具 -->
         <dozer.version>5.4.0</dozer.version>
