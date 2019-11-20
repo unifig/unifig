@@ -104,9 +104,11 @@ spring.cloud.config.server.git.password=密码
 
 ```
 
-#### 组织成员
-```
+#### 组织成员 
+|产品设计|研发|研发|
+| --- | --- | --- |
+|![俊宏](https://images.gitee.com/uploads/images/2019/1120/122240_c176f323_1070396.jpeg "203831574125611_.pic.jpg")|![晓亮](https://images.gitee.com/uploads/images/2019/1120/114137_ede45642_1070396.jpeg "WechatIMG20540.jpeg")|![佳良](https://images.gitee.com/uploads/images/2019/1120/113754_9bb4413d_1070396.jpeg "WechatIMG20378.jpeg")|
 
 
-```
+
 
