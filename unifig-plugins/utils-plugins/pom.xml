@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.32</version>
+			<version>1.2.83</version>
 		</dependency>
 
 		<!--JavaBean的映射工具，类似于apache的BeanUtils,可以灵活的处理复杂类型之间的映射 -->
