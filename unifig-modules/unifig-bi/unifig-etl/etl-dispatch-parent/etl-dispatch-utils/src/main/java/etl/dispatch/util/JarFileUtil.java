@@ -30,6 +30,9 @@ public class JarFileUtil {
 			JarEntry jarEntry = enumEntry.nextElement();
 			// 构造解压文件实体
 			File tarFile = new File(tarDir, jarEntry.getName());
+    if (!tarFile.toPath().normalize().startsWith(tarDir.toPath().normalize())) {
+      throw new IOException("Bad zip entry");
+    }
 			// 创建文件
 			makeFile(jarEntry, tarFile);
 			if (jarEntry.isDirectory()) {
