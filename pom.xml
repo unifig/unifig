@@ -99,7 +99,7 @@
         <repository>
             <id>repos</id>
             <name>Repository</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            <url>https://maven.aliyun.com/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
@@ -107,7 +107,7 @@
         <pluginRepository>
             <id>repos</id>
             <name>Repository</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            <url>https://maven.aliyun.com/nexus/content/groups/public</url>
         </pluginRepository>
     </pluginRepositories>
 
